@@ -1,32 +1,31 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { signIn, signOut, useSession } from "next-auth/client";
 import { db } from "../../firebase";
 import Image from "next/image";
 
 export default function SentPosts() {
+  const [session] = useSession();
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    db.collection("posts").onSnapshot((snapshot) => {
-      let tempPosts = [];
-      tempPosts = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        data: doc.data(),
-      }));
+    db.collection("posts")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        let tempPosts = [];
+        tempPosts = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          data: doc.data(),
+        }));
+        setPosts(tempPosts);
+      });
+  }, []);
 
-      setPosts(tempPosts);
-    });
-  });
-
-  // console.log(posts[0]);
   // const getTimeAgo = (postTime) => {
   //   let minutes = Math.floor(
   //     new Date(Date.now()).getMinutes() - new Date(postTime).getMinutes()
   //   );
-  //   let hours = Math.floor(
-  //     new Date(Date.now()).getHours() - new Date(postTime).getHours()
-  //   );
-  //   return minutes < 60 ? `${minutes}m ago` : `${hours}h ago`;
+  //   return `${minutes}m ago`;
   // };
 
   const handlePostDelete = (id) => {
@@ -49,10 +48,11 @@ export default function SentPosts() {
           <PostInfoWrapper>
             <PostUserWrapper>
               <PostUserName>{data.userName}</PostUserName>
-              <PostUploadTime>{data.date.seconds}</PostUploadTime>
             </PostUserWrapper>
             <PostContentWrapper>{data.text}</PostContentWrapper>
-            <button onClick={() => handlePostDelete(id)}>delete</button>
+            {session && session.user.email === data.userEmail && (
+              <button onClick={() => handlePostDelete(id)}>delete</button>
+            )}
           </PostInfoWrapper>
         </PostContainer>
       ))}

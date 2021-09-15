@@ -20,9 +20,8 @@ export default function PostBox() {
       text: postInput,
       images: [...postImages],
       project: postProject,
-      date: timestamp,
+      timestamp,
     });
-
     setPostInput("");
     setPostImages("");
     setPostProject("");
