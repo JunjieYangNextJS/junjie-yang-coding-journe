@@ -19,7 +19,7 @@ const HomeBodyContainer = styled.div`
   flex-direction: row;
   width: 70%;
 
-  height: 2000px;
+  height: auto;
 `;
 
 const HomeBodyWrapper = styled.div`

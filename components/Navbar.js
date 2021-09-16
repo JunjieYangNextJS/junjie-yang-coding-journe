@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useSession, signIn, signOut } from "next-auth/client";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { AiOutlineHome } from "react-icons/ai";
 import { AiFillHome } from "react-icons/ai";
 import { FaRegCommentDots } from "react-icons/fa";
@@ -15,19 +16,20 @@ import { IoPerson } from "react-icons/io5";
 
 export default function Navbar() {
   const [session] = useSession();
+  const router = useRouter();
 
   return (
     <NavbarContainer>
       <NavbarWrapper>
         <NavElementsContainer>
-          <NavElement>
+          <NavElement onClick={() => router.push("/")}>
             <AiOutlineHome /> Home
           </NavElement>
-          <NavElement>
+          <NavElement onClick={() => router.push("/comments")}>
             <FaRegCommentDots />
             Comments
           </NavElement>
-          <NavElement>
+          <NavElement onClick={() => router.push("/bookmarks")}>
             {" "}
             <IoBookmarksOutline />
             Bookmarks

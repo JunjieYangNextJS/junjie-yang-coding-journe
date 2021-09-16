@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { useSession, signIn, signOut } from "next-auth/client";
 import { timestamp, db } from "../../firebase";
 
-export default function PostBox() {
-  const [session] = useSession();
+export default function PostBox({ session }) {
   const [postInput, setPostInput] = useState("");
   const [postImages, setPostImages] = useState([]);
   const [postProject, setPostProject] = useState(2);
@@ -14,9 +12,9 @@ export default function PostBox() {
     e.preventDefault();
 
     db.collection("posts").add({
-      userEmail: session.user.email,
-      userName: session.user.name,
-      userIcon: session.user.image,
+      posterEmail: session.user.email,
+      posterName: session.user.name,
+      posterIcon: session.user.image,
       text: postInput,
       images: [...postImages],
       project: postProject,
