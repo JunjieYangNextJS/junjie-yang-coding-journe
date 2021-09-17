@@ -19,6 +19,7 @@ export default function PostBox({ session }) {
       images: [...postImages],
       project: postProject,
       timestamp,
+      comments: [],
     });
     setPostInput("");
     setPostImages("");
@@ -57,7 +58,7 @@ export default function PostBox({ session }) {
   );
 }
 
-const PostPostingSection = styled.form`
+const PostPostingSection = styled.div`
   display: flex;
 `;
 
@@ -71,7 +72,7 @@ const UserIcon = styled.div`
   overflow: hidden;
 `;
 
-const PostWritingForm = styled.div``;
+const PostWritingForm = styled.form``;
 
 const PostInputBox = styled.input``;
 

@@ -19,7 +19,7 @@ const PostsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 800px;
-  border: 1px solid rgb(83, 100, 113);
+  border: 1px solid rgb(239, 243, 244);
   height: 100%;
   z-index: 1;
 `;
