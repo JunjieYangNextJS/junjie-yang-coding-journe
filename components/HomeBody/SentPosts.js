@@ -16,7 +16,7 @@ export default function SentPosts({ session }) {
       .onSnapshot((snapshot) => {
         let tempPosts = [];
         tempPosts = snapshot.docs.map((doc) => ({
-          id: doc.id,
+          postId: doc.id,
           data: doc.data(),
         }));
         setPosts(tempPosts);
@@ -29,32 +29,49 @@ export default function SentPosts({ session }) {
   //   );
   //   return `${minutes}m ago`;
   // };
-  const [commentsExpandLocation, setCommentsExpandLocation] = useState("");
+  const [commentsExpandLocation, setCommentsExpandLocation] = useState([]);
 
-  const handleCommentsExpand = (id) => {
-    setCommentsExpandLocation(id);
+  const handleCommentsExpand = (postId) => {
+    commentsExpandLocation.includes(postId)
+      ? setCommentsExpandLocation(
+          commentsExpandLocation.filter((location) => location !== postId)
+        )
+      : setCommentsExpandLocation((prevLocation) => [...prevLocation, postId]);
   };
 
-  const handlePostBookmark = (id, data) => {
-    db.collection("bookmarks").doc(id).set({
-      readerEmail: session.user.email,
-      text: data.text,
-      images: data.images,
-      posterEmail: data.posterEmail,
-      posterName: data.posterName,
-      posterIcon: data.posterIcon,
-      timestamp,
-    });
+  const handlePostBookmark = async (postId, data) => {
+    const bookmarkRef = db.collection("bookmarks");
+    const docs = await bookmarkRef
+      .where("bookmarkedId", "==", postId)
+      .where("readerEmail", "==", session.user.email)
+      .get();
+
+    if (docs.empty) {
+      db.collection("bookmarks").add({
+        readerEmail: session.user.email,
+        text: data.text,
+        images: data.images,
+        posterEmail: data.posterEmail,
+        posterName: data.posterName,
+        posterIcon: data.posterIcon,
+        bookmarkedId: postId,
+        timestamp,
+      });
+    } else {
+      docs.forEach((doc) => {
+        doc.ref.delete();
+      });
+    }
   };
 
-  const handlePostDelete = (id) => {
-    db.collection("posts").doc(id).delete();
+  const handlePostDelete = (postId) => {
+    db.collection("posts").doc(postId).delete();
   };
 
   return (
     <PostsBodyContainer>
-      {posts.map(({ id, data }, index) => (
-        <PostBlockContainer key={id} id={data.project}>
+      {posts.map(({ postId, data }) => (
+        <PostBlockContainer key={postId} postId={data.project}>
           <PostContainer>
             <PostIconWrapper>
               <Image
@@ -69,18 +86,18 @@ export default function SentPosts({ session }) {
               <PostUsername>{data.posterName}</PostUsername>
               <PostContent>{data.text}</PostContent>
               <PostInteractWrapper>
-                <PostInteractIcon onClick={() => handleCommentsExpand(id)}>
+                <PostInteractIcon onClick={() => handleCommentsExpand(postId)}>
                   <FaRegCommentDots />
                 </PostInteractIcon>
                 {session && (
                   <PostInteractIcon
-                    onClick={() => handlePostBookmark(id, data)}
+                    onClick={() => handlePostBookmark(postId, data)}
                   >
                     <IoBookmarksOutline />
                   </PostInteractIcon>
                 )}
                 {session && session.user.email === data.posterEmail && (
-                  <PostInteractIcon onClick={() => handlePostDelete(id)}>
+                  <PostInteractIcon onClick={() => handlePostDelete(postId)}>
                     <BsTrash />
                   </PostInteractIcon>
                 )}
@@ -89,10 +106,8 @@ export default function SentPosts({ session }) {
           </PostContainer>
           <CommentsBody
             commentsExpandLocation={commentsExpandLocation}
-            setCommentsExpandLocation={setCommentsExpandLocation}
-            id={id}
+            postId={postId}
             posterName={data.posterName}
-            prevComments={data.comments}
             session={session}
           />
         </PostBlockContainer>

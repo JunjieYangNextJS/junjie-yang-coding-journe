@@ -1,43 +1,51 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { fieldPath, db, timestamp } from "../../firebase";
+import { db } from "../../firebase";
+import { BsTrash } from "react-icons/bs";
 import Image from "next/image";
 
-export default function SentComments({ id }) {
-  const [comments, setComments] = useState(null);
-
-  // useEffect(() => {
-  //   db.collection("posts").onSnapshot((snapshot) => {
-  //     let tempComments = [];
-  //     tempComments = snapshot.docs.map((doc) => ({
-  //       id: doc.id,
-  //       commentsArray: doc.data().comments,
-  //     }));
-  //     setComments(
-  //       tempComments.filter((tempComment) => tempComment.id === id)[0]
-  //     );
-  //   });
-  // }, []);
+export default function SentComments({ postId, session }) {
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
-    db.collection("posts")
-      .where(fieldPath, "==", id)
+    db.collection("comments")
+      .where("postId", "==", postId)
       .onSnapshot((snapshot) => {
         let tempComments = [];
         tempComments = snapshot.docs.map((doc) => ({
-          commentsArray: doc.data().comments,
+          commentId: doc.id,
+          data: doc.data(),
         }));
-        setComments(tempComments[0]);
+        setComments(tempComments);
       });
   }, []);
+
+  // useEffect(() => {
+  //   db.collection("posts")
+  //     .where(fieldPath, "==", id)
+  //     .onSnapshot((snapshot) =>
+  //       setComments(snapshot.docs.map((doc) => doc.data().comments))
+  //     );
+  // }, []);
+
+  const handleCommentDelete = (commentId) => {
+    db.collection("comments").doc(commentId).delete();
+  };
 
   return (
     <>
       {comments && (
         <CommentsBodyContainer>
-          {comments.commentsArray.map((comment, index) => (
-            <CommentContainer key={index}>
-              {comment.commentText}
+          {comments.map(({ commentId, data }) => (
+            <CommentContainer key={commentId}>
+              {data.commentText}
+              {session && data.commenterEmail === session.user.email && (
+                <CommentInteractIcon
+                  onClick={() => handleCommentDelete(commentId)}
+                >
+                  <BsTrash />
+                </CommentInteractIcon>
+              )}
             </CommentContainer>
           ))}
         </CommentsBodyContainer>
@@ -49,3 +57,20 @@ export default function SentComments({ id }) {
 const CommentsBodyContainer = styled.div``;
 
 const CommentContainer = styled.div``;
+
+const CommentInteractIcon = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  border-radius: 50px;
+  color: #383838;
+  transition: all 0.5s ease-in-out;
+
+  :hover {
+    background-color: #d4f7ff;
+    color: black;
+  }
+`;

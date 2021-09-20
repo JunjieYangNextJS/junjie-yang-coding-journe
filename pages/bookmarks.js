@@ -4,60 +4,59 @@ import Image from "next/image";
 import { useSession } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
+import { BsTrash } from "react-icons/bs";
 
 export default function bookmarksPage() {
   const [bookmarks, setBookmarks] = useState([]);
   const [session] = useSession();
   useEffect(() => {
+    if (!session) return;
     db.collection("bookmarks")
+      .where("readerEmail", "==", session.user.email)
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         let tempBookmarks = [];
         tempBookmarks = snapshot.docs.map((doc) => ({
-          id: doc.id,
+          markedPostId: doc.id,
           data: doc.data(),
         }));
         setBookmarks(tempBookmarks);
       });
-  }, []);
+  }, [session]);
 
-  console.log(bookmarks[0]);
-
-  const handleBookmarkDelete = (id) => {
-    db.collection("bookmarks").doc(id).delete();
+  const handleBookmarkDelete = (markedPostId) => {
+    db.collection("bookmarks").doc(markedPostId).delete();
   };
 
   return (
     <HomeContainer>
       <Navbar />
       <PostsBodyContainer>
-        {bookmarks.map(
-          ({ id, data }) =>
-            session &&
-            session.user.email === data.readerEmail && (
-              <PostContainer key={id}>
-                <PostIconWrapper>
-                  <Image
-                    src={data.posterIcon}
-                    alt={"user icon"}
-                    height={40}
-                    width={40}
-                    objectFit="cover"
-                  />
-                </PostIconWrapper>
-                <PostInfoWrapper>
-                  <PostUserWrapper>
-                    <PostUserName>{data.posterName}</PostUserName>
-                  </PostUserWrapper>
-                  <PostContentWrapper>{data.text}</PostContentWrapper>
+        {bookmarks.map(({ markedPostId, data }) => (
+          <PostContainer key={markedPostId}>
+            <PostIconWrapper>
+              <Image
+                src={data.posterIcon}
+                alt={"user icon"}
+                height={40}
+                width={40}
+                objectFit="cover"
+              />
+            </PostIconWrapper>
+            <PostInfoWrapper>
+              <PostUserWrapper>
+                <PostUserName>{data.posterName}</PostUserName>
+              </PostUserWrapper>
+              <PostContentWrapper>{data.text}</PostContentWrapper>
 
-                  <button onClick={() => handleBookmarkDelete(id)}>
-                    delete
-                  </button>
-                </PostInfoWrapper>
-              </PostContainer>
-            )
-        )}
+              <PostInteractIcon
+                onClick={() => handleBookmarkDelete(markedPostId)}
+              >
+                <BsTrash />
+              </PostInteractIcon>
+            </PostInfoWrapper>
+          </PostContainer>
+        ))}
       </PostsBodyContainer>
     </HomeContainer>
   );
@@ -101,3 +100,20 @@ const PostUploadTime = styled.div``;
 const PostContentWrapper = styled.div``;
 
 const PostBookmarkButton = styled.button``;
+
+const PostInteractIcon = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  border-radius: 50px;
+  color: #383838;
+  transition: all 0.5s ease-in-out;
+
+  :hover {
+    background-color: #d4f7ff;
+    color: black;
+  }
+`;

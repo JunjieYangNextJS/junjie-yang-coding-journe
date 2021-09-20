@@ -19,7 +19,6 @@ export default function PostBox({ session }) {
       images: [...postImages],
       project: postProject,
       timestamp,
-      comments: [],
     });
     setPostInput("");
     setPostImages("");

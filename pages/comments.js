@@ -4,36 +4,44 @@ import Image from "next/image";
 import { useSession } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
+import { BsTrash } from "react-icons/bs";
 
 export default function commentsPage() {
-  const [comments, setComments] = useState([]);
+  const [myComments, setMyComments] = useState([]);
   const [session] = useSession();
 
   useEffect(() => {
-    db.collection("posts")
-      .doc("pAcdYwa9IM4xPum1E5cN")
-      .collection("comments")
+    if (!session) return;
+    db.collection("comments")
+      .where("commenterEmail", "==", session.user.email)
+      .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-        let tempComments = [];
-        tempComments = snapshot.docs.map((doc) => ({
-          id: doc.id,
+        let tempMyComments = [];
+        tempMyComments = snapshot.docs.map((doc) => ({
+          myCommentsId: doc.id,
           data: doc.data(),
         }));
-        setComments(tempComments);
+        setMyComments(tempMyComments);
       });
   }, []);
+
+  const handlePostDelete = (myCommentsId) => {
+    db.collection("comments").doc(myCommentsId).delete();
+  };
 
   return (
     <HomeContainer>
       <Navbar />
       <PostsBodyContainer>
-        {comments.map(
-          ({ id, data }) =>
-            session &&
-            session.user.email === data.commenterEmail && (
-              <PostContainer key={id}>{data.commenterEmail}</PostContainer>
-            )
-        )}
+        {myComments.map(({ myCommentsId, data }) => (
+          <PostContainer key={myCommentsId}>
+            {data.commenterEmail}
+            {data.commentText}
+            <PostInteractIcon onClick={() => handlePostDelete(myCommentsId)}>
+              <BsTrash />
+            </PostInteractIcon>
+          </PostContainer>
+        ))}
       </PostsBodyContainer>
     </HomeContainer>
   );
@@ -77,3 +85,20 @@ const PostUploadTime = styled.div``;
 const PostContentWrapper = styled.div``;
 
 const PostBookmarkButton = styled.button``;
+
+const PostInteractIcon = styled.div`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  border-radius: 50px;
+  color: #383838;
+  transition: all 0.5s ease-in-out;
+
+  :hover {
+    background-color: #d4f7ff;
+    color: black;
+  }
+`;
