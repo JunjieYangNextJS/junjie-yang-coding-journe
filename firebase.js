@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBIXMhVenZv2slgHqlkGUKlbKPvgnkUO_Y",
@@ -18,5 +19,6 @@ const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 const timestamp = firebase.firestore.FieldValue.serverTimestamp();
 const fieldPath = firebase.firestore.FieldPath.documentId();
+const storage = firebase.storage();
 
-export { db, auth, provider, timestamp, fieldPath };
+export { db, auth, provider, timestamp, fieldPath, storage };

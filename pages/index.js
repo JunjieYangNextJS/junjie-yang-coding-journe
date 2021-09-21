@@ -27,5 +27,4 @@ const HomeContainer = styled.div`
   width: 100%;
   height: auto;
   /* background-color: green; */
-  /* border: 1px solid black; */
 `;

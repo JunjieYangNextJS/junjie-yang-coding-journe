@@ -5,6 +5,7 @@ import { useSession } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
 import { BsTrash } from "react-icons/bs";
+import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
 
 export default function bookmarksPage() {
   const [bookmarks, setBookmarks] = useState([]);
@@ -24,16 +25,15 @@ export default function bookmarksPage() {
       });
   }, [session]);
 
-  const handleBookmarkDelete = (markedPostId) => {
-    db.collection("bookmarks").doc(markedPostId).delete();
-  };
-
   return (
     <HomeContainer>
       <Navbar />
       <PostsBodyContainer>
         {bookmarks.map(({ markedPostId, data }) => (
-          <PostContainer key={markedPostId}>
+          <PostContainer
+            key={markedPostId}
+            onClick={() => handleTargetPost(data.bookmarkedId)}
+          >
             <PostIconWrapper>
               <Image
                 src={data.posterIcon}
@@ -50,7 +50,7 @@ export default function bookmarksPage() {
               <PostContentWrapper>{data.text}</PostContentWrapper>
 
               <PostInteractIcon
-                onClick={() => handleBookmarkDelete(markedPostId)}
+                onClick={() => handleIdDelete("bookmarks", markedPostId)}
               >
                 <BsTrash />
               </PostInteractIcon>

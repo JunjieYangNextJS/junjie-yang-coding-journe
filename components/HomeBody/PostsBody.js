@@ -8,7 +8,9 @@ export default function PostsBody() {
   const [session] = useSession();
   return (
     <PostsBodyContainer>
-      <Header>Home</Header>
+      <Header>
+        <h2>Home</h2>{" "}
+      </Header>
       <PostBox session={session} />
       <SentPosts session={session} />
     </PostsBodyContainer>
@@ -26,4 +28,13 @@ const PostsBodyContainer = styled.div`
 
 const Header = styled.div`
   display: flex;
+
+  height: 50px;
+  justify-content: flex-start;
+  align-items: center;
+
+  h2 {
+    font-size: 20px;
+    margin-left: 15px;
+  }
 `;

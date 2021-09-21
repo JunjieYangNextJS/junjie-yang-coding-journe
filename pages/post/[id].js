@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import { db, timestamp } from "../../firebase";
+import { handlePostBookmark } from "../../utility/handleUserActions";
 import Image from "next/image";
 import { FaRegCommentDots } from "react-icons/fa";
 import { IoBookmarksOutline } from "react-icons/io5";
@@ -26,53 +27,12 @@ export default function post() {
       } else {
         router.push("/404");
       }
-      // idRef.get().then((doc) => {
-      //   setTargetPost(doc.data());
-      // });
-      // if (idRef.get().)
     }
   }, [id]);
 
   const handlePostDelete = () => {
     db.collection("posts").doc(id).delete();
     router.push("/404");
-  };
-
-  // const handlePostBookmark = (id, targetPost) => {
-  //   db.collection("bookmarks").doc(id).set({
-  //     readerEmail: session.user.email,
-  //     text: targetPost.text,
-  //     images: targetPost.images,
-  //     posterEmail: targetPost.posterEmail,
-  //     posterName: targetPost.posterName,
-  //     posterIcon: targetPost.posterIcon,
-  //     timestamp,
-  //   });
-  // };
-
-  const handlePostBookmark = async (postId, data) => {
-    const bookmarkRef = db.collection("bookmarks");
-    const docs = await bookmarkRef
-      .where("bookmarkedId", "==", postId)
-      .where("readerEmail", "==", session.user.email)
-      .get();
-
-    if (docs.empty) {
-      db.collection("bookmarks").add({
-        readerEmail: session.user.email,
-        text: data.text,
-        images: data.images,
-        posterEmail: data.posterEmail,
-        posterName: data.posterName,
-        posterIcon: data.posterIcon,
-        bookmarkedId: postId,
-        timestamp,
-      });
-    } else {
-      docs.forEach((doc) => {
-        doc.ref.delete();
-      });
-    }
   };
 
   return (
@@ -83,13 +43,15 @@ export default function post() {
           <PostBlockContainer>
             <PostContainer>
               <PostIconWrapper>
-                <Image
-                  src={targetPost.posterIcon}
-                  alt={"user icon"}
-                  height={45}
-                  width={45}
-                  objectFit="cover"
-                />
+                <ImageWrapper>
+                  <Image
+                    src={targetPost.posterIcon}
+                    alt={"user icon"}
+                    height={45}
+                    width={45}
+                    objectFit="cover"
+                  />
+                </ImageWrapper>
               </PostIconWrapper>
               <PostInfoWrapper>
                 <PostUsername>{targetPost.posterName}</PostUsername>
@@ -97,7 +59,9 @@ export default function post() {
                 <PostInteractWrapper>
                   {session && (
                     <PostInteractIcon
-                      onClick={() => handlePostBookmark(id, targetPost)}
+                      onClick={() =>
+                        handlePostBookmark(id, targetPost, session)
+                      }
                     >
                       <IoBookmarksOutline />
                     </PostInteractIcon>
@@ -140,18 +104,20 @@ const PostContainer = styled.div`
   /* min-height: 150px; */
   max-height: auto;
   width: 100%;
+  padding-right: 5px;
   border: 1px solid rgb(239, 243, 244);
 `;
 
 const PostIconWrapper = styled.div`
   display: flex;
+  margin: 10px 15px 0 15px;
+`;
+
+const ImageWrapper = styled.div`
   height: 45px;
   width: 45px;
-
-  margin: 10px 15px 0 15px;
-  border-radius: 50px;
-
   overflow: hidden;
+  border-radius: 50px;
 `;
 
 const PostInfoWrapper = styled.div`

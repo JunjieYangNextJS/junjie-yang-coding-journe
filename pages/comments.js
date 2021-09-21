@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useSession } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
+import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
 import { BsTrash } from "react-icons/bs";
 
 export default function commentsPage() {
@@ -25,19 +26,20 @@ export default function commentsPage() {
       });
   }, []);
 
-  const handlePostDelete = (myCommentsId) => {
-    db.collection("comments").doc(myCommentsId).delete();
-  };
-
   return (
     <HomeContainer>
       <Navbar />
       <PostsBodyContainer>
         {myComments.map(({ myCommentsId, data }) => (
-          <PostContainer key={myCommentsId}>
+          <PostContainer
+            key={myCommentsId}
+            onClick={() => handleTargetPost(data.postId)}
+          >
             {data.commenterEmail}
             {data.commentText}
-            <PostInteractIcon onClick={() => handlePostDelete(myCommentsId)}>
+            <PostInteractIcon
+              onClick={() => handleIdDelete("comments", myCommentsId)}
+            >
               <BsTrash />
             </PostInteractIcon>
           </PostContainer>

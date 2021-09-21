@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { handleIdDelete } from "../../utility/handleUserActions";
 import { db } from "../../firebase";
 import { BsTrash } from "react-icons/bs";
 import Image from "next/image";
@@ -28,10 +29,6 @@ export default function SentComments({ postId, session }) {
   //     );
   // }, []);
 
-  const handleCommentDelete = (commentId) => {
-    db.collection("comments").doc(commentId).delete();
-  };
-
   return (
     <>
       {comments && (
@@ -41,7 +38,7 @@ export default function SentComments({ postId, session }) {
               {data.commentText}
               {session && data.commenterEmail === session.user.email && (
                 <CommentInteractIcon
-                  onClick={() => handleCommentDelete(commentId)}
+                  onClick={() => handleIdDelete("comments", commentId)}
                 >
                   <BsTrash />
                 </CommentInteractIcon>

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useSession, signIn, signOut } from "next-auth/client";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { SiAiqfome } from "react-icons/si";
 import { AiOutlineHome } from "react-icons/ai";
 import { AiFillHome } from "react-icons/ai";
 import { FaRegCommentDots } from "react-icons/fa";
@@ -18,10 +19,15 @@ export default function Navbar() {
   const [session] = useSession();
   const router = useRouter();
 
+  const [hoverNavElement, setHoverNavElement] = useState(false);
+
   return (
     <NavbarContainer>
       <NavbarWrapper>
         <NavElementsContainer>
+          <NavElement onClick={() => router.push("/")}>
+            <SiAiqfome />
+          </NavElement>
           <NavElement onClick={() => router.push("/")}>
             <AiOutlineHome /> Home
           </NavElement>
@@ -114,6 +120,13 @@ const NavElement = styled.div`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-wrap: break-word;
+
+  :first-child {
+    color: rgb(29, 155, 240);
+    font-size: 30px;
+    margin-top: -50px;
+    margin-bottom: -25px;
+  }
 `;
 
 const ContactMeSection = styled.div`

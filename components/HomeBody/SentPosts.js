@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import { db, timestamp } from "../../firebase";
+import styled, { css } from "styled-components";
+import { db, storage } from "../../firebase";
+import {
+  handleIdDelete,
+  handlePostBookmark,
+} from "../../utility/handleUserActions";
 import Image from "next/image";
 import { FaRegCommentDots } from "react-icons/fa";
 import { IoBookmarksOutline } from "react-icons/io5";
@@ -20,6 +24,7 @@ export default function SentPosts({ session }) {
           data: doc.data(),
         }));
         setPosts(tempPosts);
+        console.log(tempPosts[1].data.images[0]);
       });
   }, []);
 
@@ -39,65 +44,51 @@ export default function SentPosts({ session }) {
       : setCommentsExpandLocation((prevLocation) => [...prevLocation, postId]);
   };
 
-  const handlePostBookmark = async (postId, data) => {
-    const bookmarkRef = db.collection("bookmarks");
-    const docs = await bookmarkRef
-      .where("bookmarkedId", "==", postId)
-      .where("readerEmail", "==", session.user.email)
-      .get();
-
-    if (docs.empty) {
-      db.collection("bookmarks").add({
-        readerEmail: session.user.email,
-        text: data.text,
-        images: data.images,
-        posterEmail: data.posterEmail,
-        posterName: data.posterName,
-        posterIcon: data.posterIcon,
-        bookmarkedId: postId,
-        timestamp,
-      });
-    } else {
-      docs.forEach((doc) => {
-        doc.ref.delete();
-      });
-    }
-  };
-
-  const handlePostDelete = (postId) => {
-    db.collection("posts").doc(postId).delete();
-  };
-
   return (
     <PostsBodyContainer>
       {posts.map(({ postId, data }) => (
         <PostBlockContainer key={postId} postId={data.project}>
           <PostContainer>
             <PostIconWrapper>
-              <Image
-                src={data.posterIcon}
-                alt={"user icon"}
-                height={45}
-                width={45}
-                objectFit="cover"
-              />
+              <ImageWrapper>
+                <Image
+                  src={data.posterIcon}
+                  alt={"user icon"}
+                  height={45}
+                  width={45}
+                  objectFit="cover"
+                />
+              </ImageWrapper>
             </PostIconWrapper>
             <PostInfoWrapper>
               <PostUsername>{data.posterName}</PostUsername>
-              <PostContent>{data.text}</PostContent>
+              <PostContent>
+                {data.text}
+                {data.images.map((image) => (
+                  <Image
+                    src={image}
+                    alt={"post image"}
+                    height={45}
+                    width={45}
+                    objectFit="cover"
+                  />
+                ))}
+              </PostContent>
               <PostInteractWrapper>
                 <PostInteractIcon onClick={() => handleCommentsExpand(postId)}>
                   <FaRegCommentDots />
                 </PostInteractIcon>
                 {session && (
                   <PostInteractIcon
-                    onClick={() => handlePostBookmark(postId, data)}
+                    onClick={() => handlePostBookmark(postId, data, session)}
                   >
                     <IoBookmarksOutline />
                   </PostInteractIcon>
                 )}
                 {session && session.user.email === data.posterEmail && (
-                  <PostInteractIcon onClick={() => handlePostDelete(postId)}>
+                  <PostInteractIcon
+                    onClick={() => handleIdDelete("posts", postId)}
+                  >
                     <BsTrash />
                   </PostInteractIcon>
                 )}
@@ -134,23 +125,26 @@ const PostContainer = styled.div`
   max-height: auto;
   width: 100%;
   border: 1px solid rgb(239, 243, 244);
+  padding-right: 15px;
 `;
 
 const PostIconWrapper = styled.div`
   display: flex;
+  margin: 10px 15px 0 15px;
+`;
+
+const ImageWrapper = styled.div`
   height: 45px;
   width: 45px;
-
-  margin: 10px 15px 0 15px;
-  border-radius: 50px;
-
   overflow: hidden;
+  border-radius: 50px;
 `;
 
 const PostInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 8px;
+  margin-top: 10px;
+
   /* justify-content: space-between; */
 `;
 
@@ -158,11 +152,19 @@ const PostUsername = styled.div`
   display: flex;
   font-weight: 700;
   font-size: 17px;
-  margin-bottom: 2px;
+  margin-bottom: 5px;
   overflow-wrap: break-word;
 `;
 
-const PostContent = styled.div``;
+const PostContent = styled.div`
+  color: rgb(15, 20, 25);
+  height: auto;
+  width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.7;
+  text-overflow: ellipsis;
+`;
 
 const PostInteractWrapper = styled.div`
   display: flex;
