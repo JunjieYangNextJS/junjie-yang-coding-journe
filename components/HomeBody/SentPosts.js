@@ -24,7 +24,6 @@ export default function SentPosts({ session }) {
           data: doc.data(),
         }));
         setPosts(tempPosts);
-        console.log(tempPosts[1].data.images[0]);
       });
   }, []);
 
@@ -64,8 +63,9 @@ export default function SentPosts({ session }) {
               <PostUsername>{data.posterName}</PostUsername>
               <PostContent>
                 {data.text}
-                {data.images.map((image) => (
+                {data.images.map((image, index) => (
                   <Image
+                    key={index}
                     src={image}
                     alt={"post image"}
                     height={45}

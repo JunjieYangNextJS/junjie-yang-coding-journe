@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import { timestamp, db, storage } from "../../firebase";
 import { SiAiqfome } from "react-icons/si";
+import { RiImageAddLine } from "react-icons/ri";
 
 export default function PostBox({ session }) {
   const [postInput, setPostInput] = useState("");
@@ -10,7 +11,6 @@ export default function PostBox({ session }) {
 
   const [images, setImages] = useState([]);
   const [urls, setUrls] = useState([]);
-  const [progress, setProgress] = useState(0);
 
   const handleFileSelect = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
@@ -20,59 +20,61 @@ export default function PostBox({ session }) {
     }
   };
 
-  const uploadImage = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (images.length === 0) return;
+    const promises = [];
+    images.map((image) => {
+      const uploadTask = storage.ref(`images/${image.name}`).put(image);
+      promises.push(uploadTask);
+      uploadTask.on(
+        "state_changed",
+        null,
+        (error) => {
+          console.log(error);
+        },
+        async () => {
+          await storage
+            .ref("images")
+            .child(image.name)
+            .getDownloadURL()
+            .then((url) => {
+              setUrls((prevState) => [...prevState, url]);
+            });
+        }
+      );
+    });
 
-    if (images.length !== 0) {
-      const promises = [];
-      images.map((image) => {
-        const uploadTask = storage.ref(`images/${image.name}`).put(image);
-        promises.push(uploadTask);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const tempProgress = Math.round(
-              (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            );
-            setProgress(tempProgress);
-          },
-          (error) => {
-            console.log(error);
-          },
-          () => {
-            storage
-              .ref("images")
-              .child(image.name)
-              .getDownloadURL()
-              .then((url) => {
-                setUrls((prevState) => [...prevState, url]);
-              });
-          }
-        );
-      });
-
-      Promise.all(promises)
-        .then(() => alert("All images uploaded"))
-        .catch((err) => console.log(err));
-    }
-  };
+    Promise.all(promises)
+      .then(() => alert("All images uploaded"))
+      .catch((err) => console.log(err));
+  }, [images]);
 
   const sendPost = (e) => {
     e.preventDefault();
 
-    db.collection("posts").add({
-      posterEmail: session.user.email,
-      posterName: session.user.name,
-      posterIcon: session.user.image,
-      text: postInput,
-      images: urls,
-      project: postProject,
-      timestamp,
-    });
-    setPostInput("");
+    const uploadPost = async () => {
+      db.collection("posts").add({
+        posterEmail: session.user.email,
+        posterName: session.user.name,
+        posterIcon: session.user.image,
+        text: postInput,
+        images: urls,
+        project: postProject,
+        timestamp,
+      });
+    };
 
-    setImages([]);
-    setUrls([]);
+    const resetPost = async () => {
+      setPostInput("");
+      setImages([]);
+      setUrls([]);
+    };
+
+    const postActions = [uploadPost, resetPost];
+
+    for (const action of postActions) {
+      action();
+    }
   };
 
   return (
@@ -101,14 +103,24 @@ export default function PostBox({ session }) {
             </PostAuthorization>
             <PostEditSubmitSection>
               <PostEditSection>
-                <input
+                <UploadImageInput
+                  id="uploadImage"
                   type="file"
                   multiple
                   onChange={(e) => handleFileSelect(e)}
                 />
-                <button onClick={(e) => uploadImage(e)}>button</button>
+                <UploadImageLabel htmlFor="uploadImage">
+                  <RiImageAddLine />
+                  Insert Images
+                </UploadImageLabel>
+                {/* <PostSubmitButton onClick={(e) => uploadImage(e)}>
+                  confirm
+                </PostSubmitButton> */}
               </PostEditSection>
-              <PostSubmitButton onClick={(e) => sendPost(e)}>
+              <PostSubmitButton
+                onClick={(e) => sendPost(e)}
+                disabled={urls.length === images.length ? false : true}
+              >
                 Submit
               </PostSubmitButton>
             </PostEditSubmitSection>
@@ -164,6 +176,12 @@ const PostEditSubmitSection = styled.div`
 
 const PostEditSection = styled.div``;
 
+const UploadImageInput = styled.input`
+  display: none;
+`;
+
+const UploadImageLabel = styled.label``;
+
 const PostSubmitButton = styled.button`
   font-size: 15px;
   font-weight: bold;
@@ -175,4 +193,8 @@ const PostSubmitButton = styled.button`
   cursor: pointer;
   background-color: rgb(29, 155, 240);
   border: none;
+  :disabled {
+    background-color: gray;
+    cursor: default;
+  }
 `;
