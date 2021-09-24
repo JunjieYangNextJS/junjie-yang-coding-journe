@@ -9,6 +9,7 @@ export default function CommentsBody({
   postId,
   posterName,
   posterEmail,
+  readOnly,
   session,
 }) {
   const [commentInput, setCommentInput] = useState("");
@@ -70,6 +71,7 @@ export default function CommentsBody({
         postId={postId}
         posterEmail={posterEmail}
         session={session}
+        readOnly={readOnly}
       />
     </CommentsBodyContainer>
   );

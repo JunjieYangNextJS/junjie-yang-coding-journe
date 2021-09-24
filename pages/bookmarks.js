@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Image from "next/image";
+import PostEditBox from "../components/HomeBody/Post/PostEditBox";
+import CommentsBody from "../components/HomeBody/Comments/CommentsBody";
 import { useSession } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
+import { FaRegCommentDots } from "react-icons/fa";
+import { FiEdit } from "react-icons/fi";
 import { BsTrash } from "react-icons/bs";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
 
 export default function bookmarksPage() {
@@ -25,46 +31,127 @@ export default function bookmarksPage() {
       });
   }, [session]);
 
+  const [commentsExpandLocations, setCommentsExpandLocations] = useState([]);
+
+  const handleCommentsExpand = (markedPostId) => {
+    commentsExpandLocations.includes(markedPostId)
+      ? setCommentsExpandLocations(
+          commentsExpandLocations.filter(
+            (location) => location !== markedPostId
+          )
+        )
+      : setCommentsExpandLocations((prevLocation) => [
+          ...prevLocation,
+          markedPostId,
+        ]);
+    // markedPostEditExpandLocation === markedPostId &&
+    //   setMarkedPostEditExpandLocation("");
+  };
+
+  // const [markedPostEditExpandLocation, setMarkedPostEditExpandLocation] =
+  //   useState("");
+
+  // const handleMarkedPostEditExpand = (markedPostId) => {
+  //   if (markedPostEditExpandLocation === markedPostId) {
+  //     setMarkedPostEditExpandLocation("");
+  //   } else {
+  //     setMarkedPostEditExpandLocation(markedPostId);
+  //     setCommentsExpandLocations(
+  //       commentsExpandLocations.filter((location) => location !== markedPostId)
+  //     );
+  //   }
+  // };
+
   return (
     <HomeContainer>
       <Navbar />
       <PostsBodyContainer>
         {bookmarks.map(({ markedPostId, data }) => (
-          <PostContainer key={markedPostId}>
-            <PostIconWrapper>
-              <Image
-                src={data.posterIcon}
-                alt={"user icon"}
-                height={40}
-                width={40}
-                objectFit="cover"
-              />
-            </PostIconWrapper>
-            <PostInfoWrapper>
-              <PostUserWrapper>
-                <PostUserName>{data.posterName}</PostUserName>
-              </PostUserWrapper>
-
-              <PostContent onClick={() => handleTargetPost(data.bookmarkedId)}>
-                {data.text}
-                {data.images.map((image, index) => (
+          <PostBlockContainer key={markedPostId}>
+            <PostContainer>
+              <PostIconWrapper>
+                <ImageWrapper>
                   <Image
-                    key={index}
-                    src={image}
-                    alt={"post image"}
+                    src={data.posterIcon}
+                    alt={"user icon"}
                     height={45}
                     width={45}
                     objectFit="cover"
                   />
-                ))}
-              </PostContent>
-              <PostInteractIcon
-                onClick={() => handleIdDelete("bookmarks", markedPostId)}
-              >
-                <BsTrash />
-              </PostInteractIcon>
-            </PostInfoWrapper>
-          </PostContainer>
+                </ImageWrapper>
+              </PostIconWrapper>
+              <PostInfoWrapper>
+                <PostUsername>{data.posterName}</PostUsername>
+                <PostContent
+                  onClick={() => handleTargetPost(data.bookmarkedId)}
+                >
+                  {data.text}
+                  {data.images.map((image, index) => (
+                    <Image
+                      key={index}
+                      src={image}
+                      alt={"post image"}
+                      height={45}
+                      width={45}
+                      objectFit="cover"
+                    />
+                  ))}
+                </PostContent>
+                <PostInteractWrapper>
+                  <Tippy content="comments">
+                    <PostInteractIcon
+                      onClick={() => handleCommentsExpand(data.bookmarkedId)}
+                    >
+                      <FaRegCommentDots />
+
+                      {/* <CommentsAmountWrapper>
+                  {data.commentsAmount !== 0 && data.commentsAmount}
+                </CommentsAmountWrapper> */}
+                    </PostInteractIcon>
+                  </Tippy>
+                  {/* {session && session.user.email === data.posterEmail && (
+                    <Tippy content="edit">
+                      <PostInteractIcon
+                        onClick={() =>
+                          handleMarkedPostEditExpand(data.bookmarkedId)
+                        }
+                      >
+                        <FiEdit />
+                      </PostInteractIcon>
+                    </Tippy>
+                  )} */}
+                  {session && session.user.email === data.posterEmail && (
+                    <Tippy content="delete">
+                      <PostInteractIcon
+                        onClick={() =>
+                          handleIdDelete("bookmarks", markedPostId)
+                        }
+                      >
+                        <BsTrash />
+                      </PostInteractIcon>
+                    </Tippy>
+                  )}
+                </PostInteractWrapper>
+              </PostInfoWrapper>
+            </PostContainer>
+            {/* <PostEditBox
+              postEditExpandLocation={markedPostEditExpandLocation}
+              setPostEditExpandLocation={setMarkedPostEditExpandLocation}
+              postId={data.bookmarkedId}
+              postText={data.text}
+              postImages={data.images}
+              session={session}
+            /> */}
+            <CommentsBody
+              commentsExpandLocations={commentsExpandLocations}
+              postId={data.bookmarkedId}
+              posterName={data.posterName}
+              posterEmail={data.posterEmail}
+              readOnly={true}
+              // commentsAmount={data.commentsAmount}
+              session={session}
+            />
+          </PostBlockContainer>
         ))}
       </PostsBodyContainer>
     </HomeContainer>
@@ -83,43 +170,72 @@ const HomeContainer = styled.div`
 const PostsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 800px;
+  gap: 20px;
+  width: 800px;
   min-width: 400px;
+  margin-top: 30px;
 `;
 
-const PostContainer = styled.div`
-  display: flex;
-  min-height: 150px;
-
-  border: 1px solid black;
-`;
-
-const PostIconWrapper = styled.div``;
-
-const PostInfoWrapper = styled.div`
+const PostBlockContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-const PostUserWrapper = styled.div`
+const PostContainer = styled.div`
   display: flex;
+
+  /* min-height: 150px; */
+  max-height: auto;
+  width: 100%;
+  border: 1px solid rgb(239, 243, 244);
+  padding-right: 15px;
+  margin-top: 10px;
 `;
 
-const PostUserName = styled.div``;
+const PostIconWrapper = styled.div`
+  display: flex;
+  margin: 10px 15px 0 15px;
+`;
 
-const PostUploadTime = styled.div``;
+const ImageWrapper = styled.div`
+  height: 45px;
+  width: 45px;
+  overflow: hidden;
+  border-radius: 50px;
+`;
+
+const PostInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+`;
+
+const PostUsername = styled.div`
+  display: flex;
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 5px;
+  overflow-wrap: break-word;
+`;
 
 const PostContent = styled.div`
   color: rgb(15, 20, 25);
   height: auto;
-  /* width: 100%; */
+  width: 100%;
   word-break: break-word;
   overflow-wrap: break-word;
   line-height: 1.7;
   text-overflow: ellipsis;
+  cursor: pointer;
 `;
 
-const PostBookmarkButton = styled.button``;
+const PostInteractWrapper = styled.div`
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  gap: 150px;
+`;
 
 const PostInteractIcon = styled.div`
   cursor: pointer;
@@ -131,6 +247,7 @@ const PostInteractIcon = styled.div`
   border-radius: 50px;
   color: #383838;
   transition: all 0.5s ease-in-out;
+  gap: 2px;
 
   :hover {
     background-color: #d4f7ff;

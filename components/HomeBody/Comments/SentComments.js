@@ -9,7 +9,12 @@ import "tippy.js/dist/tippy.css";
 import Image from "next/image";
 import CommentEditBox from "./CommentEditBox";
 
-export default function SentComments({ postId, posterEmail, session }) {
+export default function SentComments({
+  postId,
+  posterEmail,
+  session,
+  readOnly,
+}) {
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -68,24 +73,26 @@ export default function SentComments({ postId, posterEmail, session }) {
                   />
                 )}
 
-                {session && data.commenterEmail === session.user.email && (
-                  <CommentInteractWrapper>
-                    <Tippy content="edit">
-                      <CommentInteractIcon
-                        onClick={() => handleCommentEditExpand(commentId)}
-                      >
-                        <FiEdit />
-                      </CommentInteractIcon>
-                    </Tippy>
-                    <Tippy content="delete">
-                      <CommentInteractIcon
-                        onClick={() => handleIdDelete("comments", commentId)}
-                      >
-                        <BsTrash />
-                      </CommentInteractIcon>
-                    </Tippy>
-                  </CommentInteractWrapper>
-                )}
+                {session &&
+                  data.commenterEmail === session.user.email &&
+                  readOnly !== true && (
+                    <CommentInteractWrapper>
+                      <Tippy content="edit">
+                        <CommentInteractIcon
+                          onClick={() => handleCommentEditExpand(commentId)}
+                        >
+                          <FiEdit />
+                        </CommentInteractIcon>
+                      </Tippy>
+                      <Tippy content="delete">
+                        <CommentInteractIcon
+                          onClick={() => handleIdDelete("comments", commentId)}
+                        >
+                          <BsTrash />
+                        </CommentInteractIcon>
+                      </Tippy>
+                    </CommentInteractWrapper>
+                  )}
               </SentCommentBody>
             </SentCommentWrapper>
           ))}
