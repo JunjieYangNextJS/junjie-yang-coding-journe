@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tippyjs/react": "^4.2.5",
     "dateformat": "^4.5.1",
     "firebase": "^8.8.0",
     "firebase-tools": "^9.16.0",

@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 
 export default function Custom404() {
   const router = useRouter();
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(3);
 
   useEffect(() => {
     // setTimeout(() => {
     //   router.push("/");
     // }, 5000);
-    if (timer > 1) {
+    if (timer > 0) {
       setTimeout(() => {
         setTimer(timer - 1);
       }, 1000);

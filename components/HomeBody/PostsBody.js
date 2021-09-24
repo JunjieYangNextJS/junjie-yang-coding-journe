@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import PostBox from "./PostBox";
-import SentPosts from "./SentPosts";
+import PostBox from "./Post/PostBox";
+import SentPosts from "./Post/SentPosts";
 import { signIn, signOut, useSession } from "next-auth/client";
 
 export default function PostsBody() {
@@ -20,7 +20,9 @@ export default function PostsBody() {
 const PostsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
+  /* width: max(400px, 100%); */
   width: 800px;
+  flex-grow: 2;
   border: 1px solid rgb(239, 243, 244);
   height: 100%;
   z-index: 1;

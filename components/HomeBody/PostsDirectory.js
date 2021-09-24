@@ -12,7 +12,7 @@ export default function PostsDirectory() {
 const PostsDirectoryContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(70% - 800px);
+  width: calc(70% - 1000px);
   position: fixed;
   right: 0;
   font-size: 30px;

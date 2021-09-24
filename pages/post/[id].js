@@ -5,11 +5,14 @@ import { useRouter } from "next/router";
 import { db, timestamp } from "../../firebase";
 import { handlePostBookmark } from "../../utility/handleUserActions";
 import Image from "next/image";
-import { FaRegCommentDots } from "react-icons/fa";
+import { SiAiqfome } from "react-icons/si";
+import { RiImageAddLine } from "react-icons/ri";
+import { FiEdit } from "react-icons/fi";
 import { IoBookmarksOutline } from "react-icons/io5";
 import { BsTrash } from "react-icons/bs";
 import Navbar from "../../components/Navbar";
-import CommentsBody from "./../../components/HomeBody/CommentsBody";
+import CommentsBody from "../../components/HomeBody/Comments/CommentsBody";
+import PostEditBox from "../../components/HomeBody/Post/PostEditBox";
 
 export default function post() {
   const router = useRouter();
@@ -20,19 +23,30 @@ export default function post() {
 
   useEffect(async () => {
     if (id) {
-      const idRef = db.collection("posts").doc(id);
-      const doc = await idRef.get();
-      if (doc.exists) {
-        setTargetPost(doc.data());
-      } else {
-        router.push("/404");
-      }
+      const doc = db.collection("posts").doc(id);
+      doc.onSnapshot((snapshot) => {
+        if (snapshot.exists) {
+          setTargetPost(snapshot.data());
+        } else {
+          router.push("/404");
+        }
+      });
     }
   }, [id]);
+
+  console.log("hello");
 
   const handlePostDelete = () => {
     db.collection("posts").doc(id).delete();
     router.push("/404");
+  };
+
+  const [postEditExpandLocation, setPostEditExpandLocation] = useState("");
+
+  const handlePostEditExpand = (postId) => {
+    if (postEditExpandLocation === postId) {
+      setPostEditExpandLocation("");
+    } else setPostEditExpandLocation(postId);
   };
 
   return (
@@ -55,7 +69,19 @@ export default function post() {
               </PostIconWrapper>
               <PostInfoWrapper>
                 <PostUsername>{targetPost.posterName}</PostUsername>
-                <PostContent>{targetPost.text}</PostContent>
+                <PostContent>
+                  {targetPost.text}
+                  {targetPost.images.map((image, index) => (
+                    <Image
+                      key={index}
+                      src={image}
+                      alt={"post image"}
+                      height={45}
+                      width={45}
+                      objectFit="cover"
+                    />
+                  ))}
+                </PostContent>
                 <PostInteractWrapper>
                   {session && (
                     <PostInteractIcon
@@ -67,6 +93,11 @@ export default function post() {
                     </PostInteractIcon>
                   )}
                   {session && session.user.email === targetPost.posterEmail && (
+                    <PostInteractIcon onClick={() => handlePostEditExpand(id)}>
+                      <FiEdit />
+                    </PostInteractIcon>
+                  )}
+                  {session && session.user.email === targetPost.posterEmail && (
                     <PostInteractIcon onClick={handlePostDelete}>
                       <BsTrash />
                     </PostInteractIcon>
@@ -74,10 +105,19 @@ export default function post() {
                 </PostInteractWrapper>
               </PostInfoWrapper>
             </PostContainer>
+            <PostEditBox
+              postEditExpandLocation={postEditExpandLocation}
+              setPostEditExpandLocation={setPostEditExpandLocation}
+              postId={id}
+              postText={targetPost.text}
+              postImages={targetPost.images}
+              session={session}
+            />
             <CommentsBody
-              commentsExpandLocation={id}
+              commentsExpandLocations={id}
               postId={id}
               posterName={targetPost.posterName}
+              posterEmail={targetPost.posterEmail}
               session={session}
             />
           </PostBlockContainer>
@@ -90,7 +130,6 @@ export default function post() {
 const PostBodyContainer = styled.div`
   display: flex;
   flex-direction: row;
-  /* gap: 5px; */
 `;
 
 const PostBlockContainer = styled.div`
@@ -100,7 +139,8 @@ const PostBlockContainer = styled.div`
 
 const PostContainer = styled.div`
   display: flex;
-
+  padding-top: 10px;
+  margin-top: 20px;
   /* min-height: 150px; */
   max-height: auto;
   width: 100%;
@@ -135,7 +175,15 @@ const PostUsername = styled.div`
   overflow-wrap: break-word;
 `;
 
-const PostContent = styled.div``;
+const PostContent = styled.div`
+  color: rgb(15, 20, 25);
+  height: auto;
+  width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.7;
+  text-overflow: ellipsis;
+`;
 
 const PostInteractWrapper = styled.div`
   display: flex;

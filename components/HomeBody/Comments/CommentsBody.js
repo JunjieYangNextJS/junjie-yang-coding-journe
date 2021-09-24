@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { db, timestamp } from "../../firebase";
+import { db, timestamp } from "../../../firebase";
 import Image from "next/image";
 import SentComments from "./SentComments";
 
 export default function CommentsBody({
-  commentsExpandLocation,
+  commentsExpandLocations,
   postId,
   posterName,
+  posterEmail,
   session,
 }) {
   const [commentInput, setCommentInput] = useState("");
@@ -25,13 +26,19 @@ export default function CommentsBody({
       timestamp,
     });
 
+    // db.collection("posts")
+    //   .doc(postId)
+    //   .update({
+    //     commentsAmount: commentsAmount + 1,
+    //   });
+
     setCommentInput("");
   };
 
   return (
     <CommentsBodyContainer
       location={postId}
-      commentsExpandLocation={commentsExpandLocation}
+      commentsExpandLocations={commentsExpandLocations}
     >
       {session && (
         <CommentWritingForm>
@@ -48,22 +55,32 @@ export default function CommentsBody({
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
             placeholder="Comment here..."
+            maxLength="50"
           />
 
-          <CommentSubmitSection onClick={(e) => handlePostComments(e)}>
-            Submit
+          <CommentSubmitSection
+            onClick={(e) => handlePostComments(e)}
+            disabled={commentInput === "" ? true : false}
+          >
+            Reply
           </CommentSubmitSection>
         </CommentWritingForm>
       )}
-      <SentComments postId={postId} session={session} />
+      <SentComments
+        postId={postId}
+        posterEmail={posterEmail}
+        session={session}
+      />
     </CommentsBodyContainer>
   );
 }
 
 const CommentsBodyContainer = styled.div`
-  display: ${({ location, commentsExpandLocation }) =>
-    commentsExpandLocation.includes(location) ? "flex" : "none"};
+  display: ${({ location, commentsExpandLocations }) =>
+    commentsExpandLocations.includes(location) ? "flex" : "none"};
   flex-direction: column;
+  margin-bottom: 20px;
+  /* width: max(400px, 100%); */
 `;
 
 const CommentWritingForm = styled.form`
@@ -71,26 +88,8 @@ const CommentWritingForm = styled.form`
   padding: 15px 10px;
   align-items: center;
   border: 1px solid rgb(239, 243, 244);
+  width: 100%;
 `;
-
-// const CommenterGoBackSection = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   font-size: 24px;
-//   color: #363636;
-//   cursor: pointer;
-//   margin-right: 10px;
-//   height: 35px;
-//   width: 35px;
-//   border-radius: 50px;
-//   transition: all 0.5s ease-in-out;
-
-//   :hover {
-//     background-color: #d4f7ff;
-//     color: black;
-//   }
-// `;
 
 const CommenterIconSection = styled.div`
   display: flex;
@@ -108,6 +107,7 @@ const CommentInputBox = styled.input`
   height: 40px;
   width: 500px;
   font-size: 18px;
+  padding-right: 15px;
 `;
 
 const CommentSubmitSection = styled.button`
@@ -121,4 +121,12 @@ const CommentSubmitSection = styled.button`
   cursor: pointer;
   background-color: rgb(29, 155, 240);
   border: none;
+
+  transition: all 0.3s ease-out;
+
+  :disabled {
+    background-color: #f0f1f2;
+    color: #919191;
+    cursor: default;
+  }
 `;

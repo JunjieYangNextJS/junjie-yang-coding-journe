@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
-import { db, storage } from "../../firebase";
+import { db, storage } from "../../../firebase";
 import {
   handleIdDelete,
   handlePostBookmark,
-} from "../../utility/handleUserActions";
+  handleTargetPost,
+  // handleIdEdit,
+} from "../../../utility/handleUserActions";
 import Image from "next/image";
 import { FaRegCommentDots } from "react-icons/fa";
 import { IoBookmarksOutline } from "react-icons/io5";
+import { FiEdit } from "react-icons/fi";
 import { BsTrash } from "react-icons/bs";
-import CommentsBody from "./CommentsBody";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
+import CommentsBody from "../Comments/CommentsBody";
+import PostEditBox from "./PostEditBox";
 
 export default function SentPosts({ session }) {
   const [posts, setPosts] = useState([]);
@@ -33,15 +39,34 @@ export default function SentPosts({ session }) {
   //   );
   //   return `${minutes}m ago`;
   // };
-  const [commentsExpandLocation, setCommentsExpandLocation] = useState([]);
+
+  const [commentsExpandLocations, setCommentsExpandLocations] = useState([]);
 
   const handleCommentsExpand = (postId) => {
-    commentsExpandLocation.includes(postId)
-      ? setCommentsExpandLocation(
-          commentsExpandLocation.filter((location) => location !== postId)
+    commentsExpandLocations.includes(postId)
+      ? setCommentsExpandLocations(
+          commentsExpandLocations.filter((location) => location !== postId)
         )
-      : setCommentsExpandLocation((prevLocation) => [...prevLocation, postId]);
+      : setCommentsExpandLocations((prevLocation) => [...prevLocation, postId]);
+    postEditExpandLocation === postId && setPostEditExpandLocation("");
   };
+
+  const [postEditExpandLocation, setPostEditExpandLocation] = useState("");
+
+  const handlePostEditExpand = (postId) => {
+    if (postEditExpandLocation === postId) {
+      setPostEditExpandLocation("");
+    } else {
+      setPostEditExpandLocation(postId);
+      setCommentsExpandLocations(
+        commentsExpandLocations.filter((location) => location !== postId)
+      );
+    }
+  };
+  // const handleIdEdit = async (collection, id, data, newText, newImages) => {
+  //   const idRef = db.collection(collection).doc(id);
+  //   await idRef.update({});
+  // };
 
   return (
     <PostsBodyContainer>
@@ -61,7 +86,7 @@ export default function SentPosts({ session }) {
             </PostIconWrapper>
             <PostInfoWrapper>
               <PostUsername>{data.posterName}</PostUsername>
-              <PostContent>
+              <PostContent onClick={() => handleTargetPost(postId)}>
                 {data.text}
                 {data.images.map((image, index) => (
                   <Image
@@ -75,30 +100,62 @@ export default function SentPosts({ session }) {
                 ))}
               </PostContent>
               <PostInteractWrapper>
-                <PostInteractIcon onClick={() => handleCommentsExpand(postId)}>
-                  <FaRegCommentDots />
-                </PostInteractIcon>
-                {session && (
+                <Tippy content="comments">
                   <PostInteractIcon
-                    onClick={() => handlePostBookmark(postId, data, session)}
+                    onClick={() => handleCommentsExpand(postId)}
                   >
-                    <IoBookmarksOutline />
+                    <FaRegCommentDots />
+
+                    {/* <CommentsAmountWrapper>
+                  {data.commentsAmount !== 0 && data.commentsAmount}
+                </CommentsAmountWrapper> */}
                   </PostInteractIcon>
+                </Tippy>
+
+                {session && (
+                  <Tippy content="bookmark">
+                    <PostInteractIcon
+                      onClick={() => handlePostBookmark(postId, data, session)}
+                    >
+                      <IoBookmarksOutline />
+                    </PostInteractIcon>
+                  </Tippy>
                 )}
                 {session && session.user.email === data.posterEmail && (
-                  <PostInteractIcon
-                    onClick={() => handleIdDelete("posts", postId)}
-                  >
-                    <BsTrash />
-                  </PostInteractIcon>
+                  <Tippy content="edit">
+                    <PostInteractIcon
+                      onClick={() => handlePostEditExpand(postId)}
+                    >
+                      <FiEdit />
+                    </PostInteractIcon>
+                  </Tippy>
+                )}
+                {session && session.user.email === data.posterEmail && (
+                  <Tippy content="delete">
+                    <PostInteractIcon
+                      onClick={() => handleIdDelete("posts", postId)}
+                    >
+                      <BsTrash />
+                    </PostInteractIcon>
+                  </Tippy>
                 )}
               </PostInteractWrapper>
             </PostInfoWrapper>
           </PostContainer>
+          <PostEditBox
+            postEditExpandLocation={postEditExpandLocation}
+            setPostEditExpandLocation={setPostEditExpandLocation}
+            postId={postId}
+            postText={data.text}
+            postImages={data.images}
+            session={session}
+          />
           <CommentsBody
-            commentsExpandLocation={commentsExpandLocation}
+            commentsExpandLocations={commentsExpandLocations}
             postId={postId}
             posterName={data.posterName}
+            posterEmail={data.posterEmail}
+            // commentsAmount={data.commentsAmount}
             session={session}
           />
         </PostBlockContainer>
@@ -110,7 +167,7 @@ export default function SentPosts({ session }) {
 const PostsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 15px;
 `;
 
 const PostBlockContainer = styled.div`
@@ -126,6 +183,7 @@ const PostContainer = styled.div`
   width: 100%;
   border: 1px solid rgb(239, 243, 244);
   padding-right: 15px;
+  margin-top: 10px;
 `;
 
 const PostIconWrapper = styled.div`
@@ -144,8 +202,6 @@ const PostInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 10px;
-
-  /* justify-content: space-between; */
 `;
 
 const PostUsername = styled.div`
@@ -164,14 +220,15 @@ const PostContent = styled.div`
   overflow-wrap: break-word;
   line-height: 1.7;
   text-overflow: ellipsis;
+  cursor: pointer;
 `;
 
 const PostInteractWrapper = styled.div`
   display: flex;
-  margin-top: 10px;
+  margin-top: 20px;
   margin-bottom: 8px;
   font-size: 18px;
-  gap: 100px;
+  gap: 50px;
 `;
 
 const PostInteractIcon = styled.div`
@@ -184,9 +241,14 @@ const PostInteractIcon = styled.div`
   border-radius: 50px;
   color: #383838;
   transition: all 0.5s ease-in-out;
+  gap: 2px;
 
   :hover {
     background-color: #d4f7ff;
     color: black;
   }
 `;
+
+// const CommentsAmountWrapper = styled.span`
+//   font-size: 16px;
+// `;

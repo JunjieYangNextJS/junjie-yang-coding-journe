@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { timestamp, db, storage } from "../../firebase";
+import { timestamp, db, storage } from "../../../firebase";
 import { SiAiqfome } from "react-icons/si";
 import { RiImageAddLine } from "react-icons/ri";
 
 export default function PostBox({ session }) {
   const [postInput, setPostInput] = useState("");
-  const [postProject, setPostProject] = useState(1);
-
   const [images, setImages] = useState([]);
   const [urls, setUrls] = useState([]);
 
-  const handleFileSelect = (e) => {
+  const handleImagesSelect = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
-      const newImage = e.target.files[i];
-      newImage["id"] = Math.random();
-      setImages((prevState) => [...prevState, newImage]);
+      const tempImage = e.target.files[i];
+      tempImage["id"] = Math.random();
+      setImages((prevState) => [...prevState, tempImage]);
     }
   };
 
@@ -45,8 +43,8 @@ export default function PostBox({ session }) {
     });
 
     Promise.all(promises)
-      .then(() => alert("All images uploaded"))
-      .catch((err) => console.log(err));
+      .then(() => alert("All images are uploaded."))
+      .catch(() => alert("Images are not successfully uploaded."));
   }, [images]);
 
   const sendPost = (e) => {
@@ -59,7 +57,8 @@ export default function PostBox({ session }) {
         posterIcon: session.user.image,
         text: postInput,
         images: urls,
-        project: postProject,
+        project: 1,
+        // commentsAmount: 0,
         timestamp,
       });
     };
@@ -95,31 +94,39 @@ export default function PostBox({ session }) {
               type="text"
               value={postInput}
               onChange={(e) => setPostInput(e.target.value)}
-              placeholder="Share your stories..."
+              placeholder="Share your thoughts..."
+              maxLength="500"
             />
             <PostAuthorization>
               <SiAiqfome />
               Feel free to post and comment
             </PostAuthorization>
             <PostEditSubmitSection>
-              <PostEditSection>
+              <PostImageSection>
                 <UploadImageInput
                   id="uploadImage"
                   type="file"
                   multiple
-                  onChange={(e) => handleFileSelect(e)}
+                  onChange={(e) => handleImagesSelect(e)}
                 />
                 <UploadImageLabel htmlFor="uploadImage">
-                  <RiImageAddLine />
-                  Insert Images
+                  <ImageIconWrapper>
+                    <RiImageAddLine />
+                  </ImageIconWrapper>
+                  Images
                 </UploadImageLabel>
-                {/* <PostSubmitButton onClick={(e) => uploadImage(e)}>
-                  confirm
-                </PostSubmitButton> */}
-              </PostEditSection>
+                <UploadImageInfo images={images} urls={urls}>
+                  {images.length} images are uploading...
+                </UploadImageInfo>
+              </PostImageSection>
               <PostSubmitButton
                 onClick={(e) => sendPost(e)}
-                disabled={urls.length === images.length ? false : true}
+                disabled={
+                  urls.length === images.length &&
+                  (urls.length !== 0 || postInput !== "")
+                    ? false
+                    : true
+                }
               >
                 Submit
               </PostSubmitButton>
@@ -134,7 +141,11 @@ export default function PostBox({ session }) {
 const PostPostingSection = styled.div`
   display: flex;
   border: 1px solid rgb(239, 243, 244);
+  width: max(400px, 100%);
+  /* box-shadow: 0 0 5px 1px rgb(29, 155, 240); */
   padding: 10px 18px;
+  margin-top: 5px;
+  margin-bottom: 20px;
 `;
 
 const UserIcon = styled.div`
@@ -147,7 +158,9 @@ const UserIcon = styled.div`
   overflow: hidden;
 `;
 
-const PostWritingForm = styled.form``;
+const PostWritingForm = styled.form`
+  width: max(400px, 100%);
+`;
 
 const PostInputBox = styled.input`
   border: none;
@@ -172,15 +185,38 @@ const PostEditSubmitSection = styled.div`
   justify-content: space-between;
   border-top: 1px solid rgb(239, 243, 244);
   padding-top: 11px;
+  width: max(400px, 100%);
 `;
 
-const PostEditSection = styled.div``;
+const PostImageSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 30px;
+`;
 
 const UploadImageInput = styled.input`
   display: none;
 `;
 
-const UploadImageLabel = styled.label``;
+const ImageIconWrapper = styled.div`
+  font-size: 18px;
+  margin-bottom: -5px;
+  color: rgb(29, 155, 240);
+`;
+
+const UploadImageLabel = styled.label`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+`;
+
+const UploadImageInfo = styled.span`
+  font-style: italic;
+  visibility: ${({ images, urls }) =>
+    images.length === urls.length ? "hidden" : "visible"};
+`;
 
 const PostSubmitButton = styled.button`
   font-size: 15px;
@@ -193,8 +229,11 @@ const PostSubmitButton = styled.button`
   cursor: pointer;
   background-color: rgb(29, 155, 240);
   border: none;
+  transition: all 0.3s ease-out;
+
   :disabled {
-    background-color: gray;
+    background-color: #f0f1f2;
+    color: #919191;
     cursor: default;
   }
 `;

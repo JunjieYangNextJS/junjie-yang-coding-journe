@@ -30,10 +30,7 @@ export default function bookmarksPage() {
       <Navbar />
       <PostsBodyContainer>
         {bookmarks.map(({ markedPostId, data }) => (
-          <PostContainer
-            key={markedPostId}
-            onClick={() => handleTargetPost(data.bookmarkedId)}
-          >
+          <PostContainer key={markedPostId}>
             <PostIconWrapper>
               <Image
                 src={data.posterIcon}
@@ -47,8 +44,20 @@ export default function bookmarksPage() {
               <PostUserWrapper>
                 <PostUserName>{data.posterName}</PostUserName>
               </PostUserWrapper>
-              <PostContentWrapper>{data.text}</PostContentWrapper>
 
+              <PostContent onClick={() => handleTargetPost(data.bookmarkedId)}>
+                {data.text}
+                {data.images.map((image, index) => (
+                  <Image
+                    key={index}
+                    src={image}
+                    alt={"post image"}
+                    height={45}
+                    width={45}
+                    objectFit="cover"
+                  />
+                ))}
+              </PostContent>
               <PostInteractIcon
                 onClick={() => handleIdDelete("bookmarks", markedPostId)}
               >
@@ -66,19 +75,22 @@ const HomeContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  width: 100%;
+  /* width: 100%; */
+
   height: auto;
 `;
 
 const PostsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 800px;
+  min-width: 400px;
 `;
 
 const PostContainer = styled.div`
   display: flex;
   min-height: 150px;
-  width: 100%;
+
   border: 1px solid black;
 `;
 
@@ -97,7 +109,15 @@ const PostUserName = styled.div``;
 
 const PostUploadTime = styled.div``;
 
-const PostContentWrapper = styled.div``;
+const PostContent = styled.div`
+  color: rgb(15, 20, 25);
+  height: auto;
+  /* width: 100%; */
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.7;
+  text-overflow: ellipsis;
+`;
 
 const PostBookmarkButton = styled.button``;
 

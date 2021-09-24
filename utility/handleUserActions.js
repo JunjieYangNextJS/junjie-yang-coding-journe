@@ -7,6 +7,12 @@ const handleTargetPost = (id) => {
 
 const handleIdDelete = (collection, id) => {
   db.collection(collection).doc(id).delete();
+
+  // db.collection("posts")
+  //   .doc(postId)
+  //   .update({
+  //     commentsAmount: commentsAmount - 1,
+  //   });
 };
 
 const handlePostBookmark = async (postId, data, session) => {
