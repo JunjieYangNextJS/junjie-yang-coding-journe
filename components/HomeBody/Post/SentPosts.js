@@ -5,7 +5,6 @@ import {
   handleIdDelete,
   handlePostBookmark,
   handleTargetPost,
-  // handleIdEdit,
 } from "../../../utility/handleUserActions";
 import Image from "next/image";
 import { FaRegCommentDots } from "react-icons/fa";
