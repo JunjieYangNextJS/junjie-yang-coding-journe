@@ -44,23 +44,7 @@ export default function bookmarksPage() {
           ...prevLocation,
           markedPostId,
         ]);
-    // markedPostEditExpandLocation === markedPostId &&
-    //   setMarkedPostEditExpandLocation("");
   };
-
-  // const [markedPostEditExpandLocation, setMarkedPostEditExpandLocation] =
-  //   useState("");
-
-  // const handleMarkedPostEditExpand = (markedPostId) => {
-  //   if (markedPostEditExpandLocation === markedPostId) {
-  //     setMarkedPostEditExpandLocation("");
-  //   } else {
-  //     setMarkedPostEditExpandLocation(markedPostId);
-  //     setCommentsExpandLocations(
-  //       commentsExpandLocations.filter((location) => location !== markedPostId)
-  //     );
-  //   }
-  // };
 
   return (
     <HomeContainer>
@@ -109,17 +93,7 @@ export default function bookmarksPage() {
                 </CommentsAmountWrapper> */}
                     </PostInteractIcon>
                   </Tippy>
-                  {/* {session && session.user.email === data.posterEmail && (
-                    <Tippy content="edit">
-                      <PostInteractIcon
-                        onClick={() =>
-                          handleMarkedPostEditExpand(data.bookmarkedId)
-                        }
-                      >
-                        <FiEdit />
-                      </PostInteractIcon>
-                    </Tippy>
-                  )} */}
+
                   {session && session.user.email === data.posterEmail && (
                     <Tippy content="delete">
                       <PostInteractIcon
@@ -134,14 +108,7 @@ export default function bookmarksPage() {
                 </PostInteractWrapper>
               </PostInfoWrapper>
             </PostContainer>
-            {/* <PostEditBox
-              postEditExpandLocation={markedPostEditExpandLocation}
-              setPostEditExpandLocation={setMarkedPostEditExpandLocation}
-              postId={data.bookmarkedId}
-              postText={data.text}
-              postImages={data.images}
-              session={session}
-            /> */}
+
             <CommentsBody
               commentsExpandLocations={commentsExpandLocations}
               postId={data.bookmarkedId}
