@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useSession, signIn, signOut } from "next-auth/client";
 import Image from "next/image";
+import { useSelectedNav } from "../contexts/SelectedNavContext";
 import { useRouter } from "next/router";
 import { SiAiqfome } from "react-icons/si";
 import { AiOutlineHome } from "react-icons/ai";
 import { AiFillHome } from "react-icons/ai";
 import { FaRegCommentDots } from "react-icons/fa";
 import { FaCommentDots } from "react-icons/fa";
-import { BsBell } from "react-icons/bs";
-import { BsBellFill } from "react-icons/bs";
 import { IoBookmarksOutline } from "react-icons/io5";
 import { IoBookmarks } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
@@ -18,32 +17,74 @@ import { IoPerson } from "react-icons/io5";
 export default function Navbar() {
   const [session] = useSession();
   const router = useRouter();
+  const selectedNav = useSelectedNav();
 
-  const [hoverNavElement, setHoverNavElement] = useState(false);
+  const handleSelectNav = (nav) => {
+    router.push(nav);
+  };
 
   return (
     <NavbarContainer>
       <NavbarWrapper>
         <NavElementsContainer>
-          <NavElement onClick={() => router.push("/")}>
-            <SiAiqfome />
-          </NavElement>
-          <NavElement onClick={() => router.push("/")}>
-            <AiOutlineHome /> Home
-          </NavElement>
-          <NavElement onClick={() => router.push("/comments")}>
-            <FaRegCommentDots />
-            Comments
-          </NavElement>
-          <NavElement onClick={() => router.push("/bookmarks")}>
-            {" "}
-            <IoBookmarksOutline />
-            Bookmarks
-          </NavElement>
-          <NavElement>
-            <IoPersonOutline />
-            Profile
-          </NavElement>
+          <NavElementWrapper>
+            <NavElement onClick={() => handleSelectNav("/")} label={"/"}>
+              <SiAiqfome />
+            </NavElement>
+          </NavElementWrapper>
+
+          <NavElementWrapper>
+            <NavElement
+              onClick={() => handleSelectNav("/")}
+              label={"/"}
+              selectedNav={selectedNav}
+            >
+              {selectedNav === "/" ? <AiFillHome /> : <AiOutlineHome />}
+              Home
+            </NavElement>
+          </NavElementWrapper>
+
+          <NavElementWrapper>
+            <NavElement
+              onClick={() => handleSelectNav("/comments")}
+              label={"/comments"}
+              selectedNav={selectedNav}
+            >
+              {selectedNav === "/comments" ? (
+                <FaCommentDots />
+              ) : (
+                <FaRegCommentDots />
+              )}
+              Comments
+            </NavElement>
+          </NavElementWrapper>
+
+          <NavElementWrapper>
+            <NavElement
+              onClick={() => handleSelectNav("/bookmarks")}
+              label={"/bookmarks"}
+              selectedNav={selectedNav}
+            >
+              {" "}
+              {selectedNav === "/bookmarks" ? (
+                <IoBookmarks />
+              ) : (
+                <IoBookmarksOutline />
+              )}
+              Bookmarks
+            </NavElement>
+          </NavElementWrapper>
+
+          <NavElementWrapper>
+            <NavElement
+              onClick={() => handleSelectNav("/profile")}
+              label={"/profile"}
+              selectedNav={selectedNav}
+            >
+              {selectedNav === "/profile" ? <IoPerson /> : <IoPersonOutline />}
+              Profile
+            </NavElement>
+          </NavElementWrapper>
         </NavElementsContainer>
         <ContactMeSection>
           <ContactMeButton>Contact Me</ContactMeButton>
@@ -102,37 +143,57 @@ const NavbarWrapper = styled.div`
 const NavElementsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 70px;
-  padding-left: 40px;
+  gap: 10px;
+  /* padding-left: 40px; */
   padding-bottom: 200px;
 `;
 
-const NavElement = styled.div`
+const NavElementWrapper = styled.div`
   display: flex;
   align-items: center;
   color: #363636;
   font-size: 25px;
   cursor: pointer;
-  gap: 20px;
 
+  height: 80px;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-wrap: break-word;
+  padding-left: 10px;
 
   :first-child {
     color: rgb(29, 155, 240);
     font-size: 30px;
-    margin-top: -50px;
-    margin-bottom: -25px;
+    margin-top: -80px;
+    margin-bottom: -20px;
   }
+`;
+
+const NavElement = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 25px 10px 15px;
+  transition: background-color 0.3s ease-out;
+  :hover {
+    background-color: #e6e6e6;
+  }
+
+  ${({ label, selectedNav }) =>
+    label === selectedNav &&
+    css`
+      font-weight: 700;
+    `};
+
+  border-radius: 50px;
 `;
 
 const ContactMeSection = styled.div`
   display: flex;
   justify-content: center;
-  padding-right: 20px;
+  padding-right: 50px;
   padding-bottom: 50px;
 `;
 

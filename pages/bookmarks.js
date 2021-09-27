@@ -11,12 +11,17 @@ import { FiEdit } from "react-icons/fi";
 import { BsTrash } from "react-icons/bs";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
+import { useGetSelectedNav } from "../contexts/SelectedNavContext";
 import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
 
 export default function bookmarksPage() {
   const [bookmarks, setBookmarks] = useState([]);
   const [session] = useSession();
+  const setSelectedNav = useGetSelectedNav();
+
   useEffect(() => {
+    setSelectedNav("/bookmarks");
+
     if (!session) return;
     db.collection("bookmarks")
       .where("readerEmail", "==", session.user.email)
@@ -50,76 +55,81 @@ export default function bookmarksPage() {
     <HomeContainer>
       <Navbar />
       <PostsBodyContainer>
-        {bookmarks.map(({ markedPostId, data }) => (
-          <PostBlockContainer key={markedPostId}>
-            <PostContainer>
-              <PostIconWrapper>
-                <ImageWrapper>
-                  <Image
-                    src={data.posterIcon}
-                    alt={"user icon"}
-                    height={45}
-                    width={45}
-                    objectFit="cover"
-                  />
-                </ImageWrapper>
-              </PostIconWrapper>
-              <PostInfoWrapper>
-                <PostUsername>{data.posterName}</PostUsername>
-                <PostContent
-                  onClick={() => handleTargetPost(data.bookmarkedId)}
-                >
-                  {data.text}
-                  {data.images.map((image, index) => (
+        <Header>
+          <h2>Bookmarks</h2>{" "}
+        </Header>
+        <PostsBodyWrapper>
+          {bookmarks.map(({ markedPostId, data }) => (
+            <PostBlockContainer key={markedPostId}>
+              <PostContainer>
+                <PostIconWrapper>
+                  <ImageWrapper>
                     <Image
-                      key={index}
-                      src={image}
-                      alt={"post image"}
+                      src={data.posterIcon}
+                      alt={"user icon"}
                       height={45}
                       width={45}
                       objectFit="cover"
                     />
-                  ))}
-                </PostContent>
-                <PostInteractWrapper>
-                  <Tippy content="comments">
-                    <PostInteractIcon
-                      onClick={() => handleCommentsExpand(data.bookmarkedId)}
-                    >
-                      <FaRegCommentDots />
+                  </ImageWrapper>
+                </PostIconWrapper>
+                <PostInfoWrapper>
+                  <PostUsername>{data.posterName}</PostUsername>
+                  <PostContent
+                    onClick={() => handleTargetPost(data.bookmarkedId)}
+                  >
+                    {data.text}
+                    {data.images.map((image, index) => (
+                      <Image
+                        key={index}
+                        src={image}
+                        alt={"post image"}
+                        height={45}
+                        width={45}
+                        objectFit="cover"
+                      />
+                    ))}
+                  </PostContent>
+                  <PostInteractWrapper>
+                    <Tippy content="comments">
+                      <PostInteractIcon
+                        onClick={() => handleCommentsExpand(data.bookmarkedId)}
+                      >
+                        <FaRegCommentDots />
 
-                      {/* <CommentsAmountWrapper>
+                        {/* <CommentsAmountWrapper>
                   {data.commentsAmount !== 0 && data.commentsAmount}
                 </CommentsAmountWrapper> */}
-                    </PostInteractIcon>
-                  </Tippy>
-
-                  {session && session.user.email === data.posterEmail && (
-                    <Tippy content="delete">
-                      <PostInteractIcon
-                        onClick={() =>
-                          handleIdDelete("bookmarks", markedPostId)
-                        }
-                      >
-                        <BsTrash />
                       </PostInteractIcon>
                     </Tippy>
-                  )}
-                </PostInteractWrapper>
-              </PostInfoWrapper>
-            </PostContainer>
 
-            <CommentsBody
-              commentsExpandLocations={commentsExpandLocations}
-              postId={data.bookmarkedId}
-              posterName={data.posterName}
-              posterEmail={data.posterEmail}
-              readOnly={true}
-              // commentsAmount={data.commentsAmount}
-              session={session}
-            />
-          </PostBlockContainer>
-        ))}
+                    {session && session.user.email === data.posterEmail && (
+                      <Tippy content="delete">
+                        <PostInteractIcon
+                          onClick={() =>
+                            handleIdDelete("bookmarks", markedPostId)
+                          }
+                        >
+                          <BsTrash />
+                        </PostInteractIcon>
+                      </Tippy>
+                    )}
+                  </PostInteractWrapper>
+                </PostInfoWrapper>
+              </PostContainer>
+
+              <CommentsBody
+                commentsExpandLocations={commentsExpandLocations}
+                postId={data.bookmarkedId}
+                posterName={data.posterName}
+                posterEmail={data.posterEmail}
+                readOnly={true}
+                // commentsAmount={data.commentsAmount}
+                session={session}
+              />
+            </PostBlockContainer>
+          ))}
+        </PostsBodyWrapper>
       </PostsBodyContainer>
     </HomeContainer>
   );
@@ -130,22 +140,41 @@ const HomeContainer = styled.div`
   flex-direction: row;
   align-items: stretch;
   /* width: 100%; */
-
   height: auto;
 `;
 
 const PostsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
   width: 800px;
   min-width: 400px;
-  margin-top: 30px;
+  border: 1px solid rgb(239, 243, 244);
+  /* margin-top: 30px; */
+`;
+
+const Header = styled.div`
+  display: flex;
+
+  height: 60px;
+  justify-content: flex-start;
+  align-items: center;
+
+  h2 {
+    font-size: 20px;
+    margin-left: 15px;
+  }
+`;
+
+const PostsBodyWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 `;
 
 const PostBlockContainer = styled.div`
-  display: flex;
+  /* display: flex;
   flex-direction: column;
+  gap: 40px; */
 `;
 
 const PostContainer = styled.div`

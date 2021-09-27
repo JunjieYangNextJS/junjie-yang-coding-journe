@@ -70,8 +70,8 @@ export default function SentPosts({ session }) {
   return (
     <PostsBodyContainer>
       {posts.map(({ postId, data }) => (
-        <PostBlockContainer key={postId} postId={data.project}>
-          <PostContainer>
+        <PostBlockContainer key={postId}>
+          <PostContainer id={data.project}>
             <PostIconWrapper>
               <ImageWrapper>
                 <Image
@@ -86,17 +86,19 @@ export default function SentPosts({ session }) {
             <PostInfoWrapper>
               <PostUsername>{data.posterName}</PostUsername>
               <PostContent onClick={() => handleTargetPost(postId)}>
-                {data.text}
-                {data.images.map((image, index) => (
-                  <Image
-                    key={index}
-                    src={image}
-                    alt={"post image"}
-                    height={45}
-                    width={45}
-                    objectFit="cover"
-                  />
-                ))}
+                <PostText>{data.text}</PostText>
+                <PostImages>
+                  {data.images.map((image, index) => (
+                    <Image
+                      key={index}
+                      src={image}
+                      alt={"post image"}
+                      height={45}
+                      width={45}
+                      objectFit="cover"
+                    />
+                  ))}
+                </PostImages>
               </PostContent>
               <PostInteractWrapper>
                 <Tippy content="comments">
@@ -221,6 +223,12 @@ const PostContent = styled.div`
   text-overflow: ellipsis;
   cursor: pointer;
 `;
+
+const PostText = styled.div`
+  margin-bottom: 10px;
+`;
+
+const PostImages = styled.div``;
 
 const PostInteractWrapper = styled.div`
   display: flex;

@@ -81,13 +81,15 @@ export default function PostBox({ session }) {
       {session && (
         <PostPostingSection>
           <UserIcon>
-            <Image
-              src={session.user.image}
-              alt={"user icon"}
-              height={40}
-              width={40}
-              objectFit="cover"
-            />
+            <ImageWrapper>
+              <Image
+                src={session.user.image}
+                alt={"user icon"}
+                height={40}
+                width={40}
+                objectFit="cover"
+              />
+            </ImageWrapper>
           </UserIcon>
           <PostWritingForm>
             <PostInputBox
@@ -150,12 +152,15 @@ const PostPostingSection = styled.div`
 
 const UserIcon = styled.div`
   display: flex;
-  height: 40px;
-  width: 40px;
-  border-radius: 50px;
   /* border: 1px solid red; */
   margin-right: 15px;
+`;
+
+const ImageWrapper = styled.div`
+  height: 40px;
+  width: 40px;
   overflow: hidden;
+  border-radius: 50px;
 `;
 
 const PostWritingForm = styled.form`

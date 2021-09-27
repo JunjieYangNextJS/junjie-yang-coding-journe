@@ -6,12 +6,18 @@ import { db } from "../firebase";
 import Navbar from "../components/Navbar";
 import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
 import { BsTrash } from "react-icons/bs";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
+import { useGetSelectedNav } from "../contexts/SelectedNavContext";
 
 export default function commentsPage() {
   const [myComments, setMyComments] = useState([]);
   const [session] = useSession();
+  const setSelectedNav = useGetSelectedNav();
 
   useEffect(() => {
+    setSelectedNav("/comments");
+
     if (!session) return;
     db.collection("comments")
       .where("commenterEmail", "==", session.user.email)
@@ -24,26 +30,53 @@ export default function commentsPage() {
         }));
         setMyComments(tempMyComments);
       });
-  }, []);
+  }, [session]);
 
   return (
     <HomeContainer>
       <Navbar />
       <PostsBodyContainer>
-        {myComments.map(({ myCommentsId, data }) => (
-          <PostContainer
-            key={myCommentsId}
-            onClick={() => handleTargetPost(data.postId)}
-          >
-            {data.commenterEmail}
-            {data.commentText}
-            <PostInteractIcon
-              onClick={() => handleIdDelete("comments", myCommentsId)}
-            >
-              <BsTrash />
-            </PostInteractIcon>
-          </PostContainer>
-        ))}
+        <Header>
+          <h2>Comments</h2>{" "}
+        </Header>
+        <PostsBodyWrapper>
+          {myComments.map(({ myCommentsId, data }) => (
+            <PostBlockContainer key={myCommentsId}>
+              <PostContainer>
+                <PostIconWrapper>
+                  <ImageWrapper>
+                    <Image
+                      src={data.commenterIcon}
+                      alt={"commenter icon"}
+                      height={45}
+                      width={45}
+                      objectFit="cover"
+                    />
+                  </ImageWrapper>
+                </PostIconWrapper>
+                <PostInfoWrapper>
+                  <PostUsername>{data.commenterName}</PostUsername>
+                  <PostContent onClick={() => handleTargetPost(data.postId)}>
+                    {data.commentText}
+                  </PostContent>
+                  <PostInteractWrapper>
+                    {session && session.user.email === data.commenterEmail && (
+                      <Tippy content="delete">
+                        <PostInteractIcon
+                          onClick={() =>
+                            handleIdDelete("comments", myCommentsId)
+                          }
+                        >
+                          <BsTrash />
+                        </PostInteractIcon>
+                      </Tippy>
+                    )}
+                  </PostInteractWrapper>
+                </PostInfoWrapper>
+              </PostContainer>
+            </PostBlockContainer>
+          ))}
+        </PostsBodyWrapper>
       </PostsBodyContainer>
     </HomeContainer>
   );
@@ -53,40 +86,99 @@ const HomeContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  width: 100%;
+  /* width: 100%; */
   height: auto;
 `;
 
 const PostsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 800px;
+  min-width: 400px;
+  border: 1px solid rgb(239, 243, 244);
+  /* margin-top: 30px; */
+`;
+
+const Header = styled.div`
+  display: flex;
+
+  height: 60px;
+  justify-content: flex-start;
+  align-items: center;
+
+  h2 {
+    font-size: 20px;
+    margin-left: 15px;
+  }
+`;
+
+const PostsBodyWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+`;
+
+const PostBlockContainer = styled.div`
+  /* display: flex;
+  flex-direction: column;
+  gap: 40px; */
 `;
 
 const PostContainer = styled.div`
   display: flex;
-  min-height: 150px;
+
+  /* min-height: 150px; */
+  max-height: auto;
   width: 100%;
-  border: 1px solid black;
+  border: 1px solid rgb(239, 243, 244);
+  padding-right: 15px;
+  margin-top: 10px;
 `;
 
-const PostIconWrapper = styled.div``;
+const PostIconWrapper = styled.div`
+  display: flex;
+  margin: 10px 15px 0 15px;
+`;
+
+const ImageWrapper = styled.div`
+  height: 45px;
+  width: 45px;
+  overflow: hidden;
+  border-radius: 50px;
+`;
 
 const PostInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 10px;
 `;
 
-const PostUserWrapper = styled.div`
+const PostUsername = styled.div`
   display: flex;
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 5px;
+  overflow-wrap: break-word;
 `;
 
-const PostUserName = styled.div``;
+const PostContent = styled.div`
+  color: rgb(15, 20, 25);
+  height: auto;
+  width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.7;
+  text-overflow: ellipsis;
+  cursor: pointer;
+`;
 
-const PostUploadTime = styled.div``;
-
-const PostContentWrapper = styled.div``;
-
-const PostBookmarkButton = styled.button``;
+const PostInteractWrapper = styled.div`
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  gap: 150px;
+`;
 
 const PostInteractIcon = styled.div`
   cursor: pointer;
@@ -98,6 +190,7 @@ const PostInteractIcon = styled.div`
   border-radius: 50px;
   color: #383838;
   transition: all 0.5s ease-in-out;
+  gap: 2px;
 
   :hover {
     background-color: #d4f7ff;

@@ -13,6 +13,8 @@ import { BsTrash } from "react-icons/bs";
 import Navbar from "../../components/Navbar";
 import CommentsBody from "../../components/HomeBody/Comments/CommentsBody";
 import PostEditBox from "../../components/HomeBody/Post/PostEditBox";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 
 export default function post() {
   const router = useRouter();
@@ -84,23 +86,31 @@ export default function post() {
                 </PostContent>
                 <PostInteractWrapper>
                   {session && (
-                    <PostInteractIcon
-                      onClick={() =>
-                        handlePostBookmark(id, targetPost, session)
-                      }
-                    >
-                      <IoBookmarksOutline />
-                    </PostInteractIcon>
+                    <Tippy content="bookmark">
+                      <PostInteractIcon
+                        onClick={() =>
+                          handlePostBookmark(id, targetPost, session)
+                        }
+                      >
+                        <IoBookmarksOutline />
+                      </PostInteractIcon>
+                    </Tippy>
                   )}
                   {session && session.user.email === targetPost.posterEmail && (
-                    <PostInteractIcon onClick={() => handlePostEditExpand(id)}>
-                      <FiEdit />
-                    </PostInteractIcon>
+                    <Tippy content="edit">
+                      <PostInteractIcon
+                        onClick={() => handlePostEditExpand(id)}
+                      >
+                        <FiEdit />
+                      </PostInteractIcon>
+                    </Tippy>
                   )}
                   {session && session.user.email === targetPost.posterEmail && (
-                    <PostInteractIcon onClick={handlePostDelete}>
-                      <BsTrash />
-                    </PostInteractIcon>
+                    <Tippy content="delete">
+                      <PostInteractIcon onClick={handlePostDelete}>
+                        <BsTrash />
+                      </PostInteractIcon>
+                    </Tippy>
                   )}
                 </PostInteractWrapper>
               </PostInfoWrapper>
