@@ -5,14 +5,16 @@ const handleTargetPost = (id) => {
   router.push("/post/" + id);
 };
 
-const handleIdDelete = (collection, id) => {
+const handleIdDelete = async (collection, id, postId) => {
   db.collection(collection).doc(id).delete();
 
-  // db.collection("posts")
-  //   .doc(postId)
-  //   .update({
-  //     commentsAmount: commentsAmount - 1,
-  //   });
+  const postIdRef = db.collection("posts");
+  const snapshot = await postIdRef.doc(postId).get();
+  if (snapshot.exists) {
+    postIdRef.doc(postId).update({
+      commentsAmount: snapshot.data().commentsAmount - 1,
+    });
+  }
 };
 
 const handlePostBookmark = async (postId, data, session) => {
@@ -36,6 +38,21 @@ const handlePostBookmark = async (postId, data, session) => {
   } else {
     docs.forEach((doc) => {
       doc.ref.delete();
+    });
+  }
+
+  const userBookmarkedRef = db.collection("posts");
+  const snapshot = await userBookmarkedRef.doc(postId).get();
+
+  if (snapshot.data().bookmarked.includes(session.user.email)) {
+    userBookmarkedRef.doc(postId).update({
+      bookmarked: snapshot
+        .data()
+        .bookmarked.filter((email) => email !== session.user.email),
+    });
+  } else {
+    userBookmarkedRef.doc(postId).update({
+      bookmarked: snapshot.data().bookmarked.concat([session.user.email]),
     });
   }
 };

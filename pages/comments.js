@@ -5,6 +5,7 @@ import { useSession } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
 import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
+import getTimeAgo from "../utility/getTimeAgo";
 import { BsTrash } from "react-icons/bs";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
@@ -14,6 +15,7 @@ export default function commentsPage() {
   const [myComments, setMyComments] = useState([]);
   const [session] = useSession();
   const setSelectedNav = useGetSelectedNav();
+  const [currentTime, setCurrentTime] = useState(null);
 
   useEffect(() => {
     setSelectedNav("/comments");
@@ -30,6 +32,7 @@ export default function commentsPage() {
         }));
         setMyComments(tempMyComments);
       });
+    setCurrentTime(Date.now());
   }, [session]);
 
   return (
@@ -55,7 +58,15 @@ export default function commentsPage() {
                   </ImageWrapper>
                 </PostIconWrapper>
                 <PostInfoWrapper>
-                  <PostUsername>{data.commenterName}</PostUsername>
+                  <PostUserInfo>
+                    <PostUsername>{data.commenterName}</PostUsername>
+                    {data.timestamp && (
+                      <PostTimestamp>
+                        {getTimeAgo(currentTime, data.timestamp.seconds)}
+                      </PostTimestamp>
+                    )}
+                  </PostUserInfo>
+
                   <PostContent onClick={() => handleTargetPost(data.postId)}>
                     {data.commentText}
                   </PostContent>
@@ -64,7 +75,11 @@ export default function commentsPage() {
                       <Tippy content="delete">
                         <PostInteractIcon
                           onClick={() =>
-                            handleIdDelete("comments", myCommentsId)
+                            handleIdDelete(
+                              "comments",
+                              myCommentsId,
+                              data.postId
+                            )
                           }
                         >
                           <BsTrash />
@@ -153,12 +168,21 @@ const PostInfoWrapper = styled.div`
   margin-top: 10px;
 `;
 
+const PostUserInfo = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
 const PostUsername = styled.div`
   display: flex;
   font-weight: 700;
   font-size: 17px;
   margin-bottom: 5px;
   overflow-wrap: break-word;
+`;
+
+const PostTimestamp = styled.div`
+  margin-top: 1px;
 `;
 
 const PostContent = styled.div`

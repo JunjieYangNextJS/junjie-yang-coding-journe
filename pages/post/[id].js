@@ -92,7 +92,12 @@ export default function post() {
                           handlePostBookmark(id, targetPost, session)
                         }
                       >
-                        <IoBookmarksOutline />
+                        <BookmarkedWrapper
+                          bookmarked={targetPost.bookmarked}
+                          user={session.user.email}
+                        >
+                          <IoBookmarksOutline />
+                        </BookmarkedWrapper>
                       </PostInteractIcon>
                     </Tippy>
                   )}
@@ -218,4 +223,11 @@ const PostInteractIcon = styled.div`
     background-color: #d4f7ff;
     color: black;
   }
+`;
+
+const BookmarkedWrapper = styled.div`
+  display: flex;
+  transition: all 0.3s ease-in-out;
+  color: ${({ bookmarked, user }) =>
+    bookmarked.includes(user) ? "rgb(29, 155, 240)" : "default"};
 `;

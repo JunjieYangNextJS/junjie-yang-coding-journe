@@ -13,11 +13,13 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { useGetSelectedNav } from "../contexts/SelectedNavContext";
 import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
+import getTimeAgo from "../utility/getTimeAgo";
 
 export default function bookmarksPage() {
   const [bookmarks, setBookmarks] = useState([]);
   const [session] = useSession();
   const setSelectedNav = useGetSelectedNav();
+  const [currentTime, setCurrentTime] = useState(null);
 
   useEffect(() => {
     setSelectedNav("/bookmarks");
@@ -34,6 +36,7 @@ export default function bookmarksPage() {
         }));
         setBookmarks(tempBookmarks);
       });
+    setCurrentTime(Date.now());
   }, [session]);
 
   const [commentsExpandLocations, setCommentsExpandLocations] = useState([]);
@@ -74,7 +77,14 @@ export default function bookmarksPage() {
                   </ImageWrapper>
                 </PostIconWrapper>
                 <PostInfoWrapper>
-                  <PostUsername>{data.posterName}</PostUsername>
+                  <PostUserInfo>
+                    <PostUsername>{data.posterName}</PostUsername>
+                    {data.timestamp && (
+                      <PostTimestamp>
+                        {getTimeAgo(currentTime, data.timestamp.seconds)}
+                      </PostTimestamp>
+                    )}
+                  </PostUserInfo>
                   <PostContent
                     onClick={() => handleTargetPost(data.bookmarkedId)}
                   >
@@ -206,12 +216,21 @@ const PostInfoWrapper = styled.div`
   margin-top: 10px;
 `;
 
+const PostUserInfo = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
 const PostUsername = styled.div`
   display: flex;
   font-weight: 700;
   font-size: 17px;
   margin-bottom: 5px;
   overflow-wrap: break-word;
+`;
+
+const PostTimestamp = styled.div`
+  margin-top: 1px;
 `;
 
 const PostContent = styled.div`

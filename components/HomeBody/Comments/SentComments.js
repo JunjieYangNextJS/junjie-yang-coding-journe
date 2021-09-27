@@ -86,7 +86,9 @@ export default function SentComments({
                       </Tippy>
                       <Tippy content="delete">
                         <CommentInteractIcon
-                          onClick={() => handleIdDelete("comments", commentId)}
+                          onClick={() =>
+                            handleIdDelete("comments", commentId, postId)
+                          }
                         >
                           <BsTrash />
                         </CommentInteractIcon>

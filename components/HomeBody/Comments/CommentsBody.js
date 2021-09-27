@@ -14,7 +14,7 @@ export default function CommentsBody({
 }) {
   const [commentInput, setCommentInput] = useState("");
 
-  const handlePostComments = (e) => {
+  const handlePostComments = async (e) => {
     e.preventDefault();
 
     db.collection("comments").add({
@@ -27,11 +27,11 @@ export default function CommentsBody({
       timestamp,
     });
 
-    // db.collection("posts")
-    //   .doc(postId)
-    //   .update({
-    //     commentsAmount: commentsAmount + 1,
-    //   });
+    const postIdRef = db.collection("posts");
+    const snapshot = await postIdRef.doc(postId).get();
+    postIdRef.doc(postId).update({
+      commentsAmount: snapshot.data().commentsAmount + 1,
+    });
 
     setCommentInput("");
   };

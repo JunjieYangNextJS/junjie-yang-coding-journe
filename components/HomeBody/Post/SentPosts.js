@@ -6,6 +6,7 @@ import {
   handlePostBookmark,
   handleTargetPost,
 } from "../../../utility/handleUserActions";
+import getTimeAgo from "../../../utility/getTimeAgo";
 import Image from "next/image";
 import { FaRegCommentDots } from "react-icons/fa";
 import { IoBookmarksOutline } from "react-icons/io5";
@@ -18,6 +19,7 @@ import PostEditBox from "./PostEditBox";
 
 export default function SentPosts({ session }) {
   const [posts, setPosts] = useState([]);
+  const [currentTime, setCurrentTime] = useState(null);
 
   useEffect(() => {
     db.collection("posts")
@@ -30,14 +32,12 @@ export default function SentPosts({ session }) {
         }));
         setPosts(tempPosts);
       });
+    setCurrentTime(Date.now());
   }, []);
 
-  // const getTimeAgo = (postTime) => {
-  //   let minutes = Math.floor(
-  //     new Date(Date.now()).getMinutes() - new Date(postTime).getMinutes()
-  //   );
-  //   return `${minutes}m ago`;
-  // };
+  // console.log(posts[0].data.timestamp.seconds);
+
+  // console.log(posts[0]);
 
   const [commentsExpandLocations, setCommentsExpandLocations] = useState([]);
 
@@ -62,10 +62,6 @@ export default function SentPosts({ session }) {
       );
     }
   };
-  // const handleIdEdit = async (collection, id, data, newText, newImages) => {
-  //   const idRef = db.collection(collection).doc(id);
-  //   await idRef.update({});
-  // };
 
   return (
     <PostsBodyContainer>
@@ -84,7 +80,15 @@ export default function SentPosts({ session }) {
               </ImageWrapper>
             </PostIconWrapper>
             <PostInfoWrapper>
-              <PostUsername>{data.posterName}</PostUsername>
+              <PostUserInfo>
+                <PostUsername>{data.posterName}</PostUsername>
+                {data.timestamp && (
+                  <PostTimestamp>
+                    {getTimeAgo(currentTime, data.timestamp.seconds)}
+                  </PostTimestamp>
+                )}
+              </PostUserInfo>
+
               <PostContent onClick={() => handleTargetPost(postId)}>
                 <PostText>{data.text}</PostText>
                 <PostImages>
@@ -107,9 +111,9 @@ export default function SentPosts({ session }) {
                   >
                     <FaRegCommentDots />
 
-                    {/* <CommentsAmountWrapper>
-                  {data.commentsAmount !== 0 && data.commentsAmount}
-                </CommentsAmountWrapper> */}
+                    <CommentsAmountWrapper>
+                      {data.commentsAmount !== 0 && data.commentsAmount}
+                    </CommentsAmountWrapper>
                   </PostInteractIcon>
                 </Tippy>
 
@@ -118,7 +122,13 @@ export default function SentPosts({ session }) {
                     <PostInteractIcon
                       onClick={() => handlePostBookmark(postId, data, session)}
                     >
-                      <IoBookmarksOutline />
+                      {" "}
+                      <BookmarkedWrapper
+                        bookmarked={data.bookmarked}
+                        user={session.user.email}
+                      >
+                        <IoBookmarksOutline />
+                      </BookmarkedWrapper>
                     </PostInteractIcon>
                   </Tippy>
                 )}
@@ -205,12 +215,21 @@ const PostInfoWrapper = styled.div`
   margin-top: 10px;
 `;
 
+const PostUserInfo = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
 const PostUsername = styled.div`
   display: flex;
   font-weight: 700;
   font-size: 17px;
   margin-bottom: 5px;
   overflow-wrap: break-word;
+`;
+
+const PostTimestamp = styled.div`
+  margin-top: 1px;
 `;
 
 const PostContent = styled.div`
@@ -256,6 +275,14 @@ const PostInteractIcon = styled.div`
   }
 `;
 
-// const CommentsAmountWrapper = styled.span`
-//   font-size: 16px;
-// `;
+const BookmarkedWrapper = styled.div`
+  display: flex;
+  transition: all 0.3s ease-in-out;
+  color: ${({ bookmarked, user }) =>
+    bookmarked.includes(user) ? "rgb(29, 155, 240)" : "default"};
+`;
+
+const CommentsAmountWrapper = styled.span`
+  display: flex;
+  font-size: 16px;
+`;

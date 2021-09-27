@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
 import { useSession, signIn, signOut } from "next-auth/client";
 import Image from "next/image";
@@ -19,8 +19,8 @@ export default function Navbar() {
   const router = useRouter();
   const selectedNav = useSelectedNav();
 
-  const handleSelectNav = (nav) => {
-    router.push(nav);
+  const handleSelectNav = (page) => {
+    router.push(page);
   };
 
   return (
@@ -120,7 +120,6 @@ const NavbarContainer = styled.div`
   position: relative;
   flex-direction: column;
   z-index: 2;
-
   align-items: flex-end;
   width: 30%;
   height: 100%;
@@ -133,7 +132,6 @@ const NavbarWrapper = styled.div`
   min-width: 100px;
   backface-visibility: hidden;
   flex-basis: auto;
-
   flex-shrink: 0;
   height: 100%;
   padding-top: 80px;
@@ -144,7 +142,6 @@ const NavElementsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  /* padding-left: 40px; */
   padding-bottom: 200px;
 `;
 
@@ -154,7 +151,6 @@ const NavElementWrapper = styled.div`
   color: #363636;
   font-size: 25px;
   cursor: pointer;
-
   height: 80px;
   max-width: 100%;
   overflow: hidden;
@@ -215,7 +211,6 @@ const DisplayUserWrapper = styled.div`
   align-items: center;
   max-width: 220px;
   min-height: 60px;
-  /* border: 1px solid black; */
   border-radius: 50px;
   margin-top: 100px;
   margin-bottom: 50px;
@@ -239,7 +234,6 @@ const DisplayUserIcon = styled.div`
   height: 40px;
   width: 40px;
   border-radius: 50px;
-  /* border: 1px solid red; */
   margin-right: 15px;
   overflow: hidden;
 `;

@@ -58,7 +58,8 @@ export default function PostBox({ session }) {
         text: postInput,
         images: urls,
         project: 1,
-        // commentsAmount: 0,
+        bookmarked: [],
+        commentsAmount: 0,
         timestamp,
       });
     };
