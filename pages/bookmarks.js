@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Image from "next/image";
 import PostEditBox from "../components/HomeBody/Post/PostEditBox";
 import CommentsBody from "../components/HomeBody/Comments/CommentsBody";
-import { useSession } from "next-auth/client";
+import { useSession, signIn } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
 import { FaRegCommentDots } from "react-icons/fa";
@@ -62,83 +62,91 @@ export default function bookmarksPage() {
           <h2>Bookmarks</h2>{" "}
         </Header>
         <PostsBodyWrapper>
-          {bookmarks.map(({ markedPostId, data }) => (
-            <PostBlockContainer key={markedPostId}>
-              <PostContainer>
-                <PostIconWrapper>
-                  <ImageWrapper>
-                    <Image
-                      src={data.posterIcon}
-                      alt={"user icon"}
-                      height={45}
-                      width={45}
-                      objectFit="cover"
-                    />
-                  </ImageWrapper>
-                </PostIconWrapper>
-                <PostInfoWrapper>
-                  <PostUserInfo>
-                    <PostUsername>{data.posterName}</PostUsername>
-                    {data.timestamp && (
-                      <PostTimestamp>
-                        {getTimeAgo(currentTime, data.timestamp.seconds)}
-                      </PostTimestamp>
-                    )}
-                  </PostUserInfo>
-                  <PostContent
-                    onClick={() => handleTargetPost(data.bookmarkedId)}
-                  >
-                    {data.text}
-                    {data.images.map((image, index) => (
+          {session ? (
+            bookmarks.map(({ markedPostId, data }) => (
+              <PostBlockContainer key={markedPostId}>
+                <PostContainer>
+                  <PostIconWrapper>
+                    <ImageWrapper>
                       <Image
-                        key={index}
-                        src={image}
-                        alt={"post image"}
+                        src={data.posterIcon}
+                        alt={"user icon"}
                         height={45}
                         width={45}
                         objectFit="cover"
                       />
-                    ))}
-                  </PostContent>
-                  <PostInteractWrapper>
-                    <Tippy content="comments">
-                      <PostInteractIcon
-                        onClick={() => handleCommentsExpand(data.bookmarkedId)}
-                      >
-                        <FaRegCommentDots />
-
-                        {/* <CommentsAmountWrapper>
-                  {data.commentsAmount !== 0 && data.commentsAmount}
-                </CommentsAmountWrapper> */}
-                      </PostInteractIcon>
-                    </Tippy>
-
-                    {session && session.user.email === data.posterEmail && (
-                      <Tippy content="delete">
+                    </ImageWrapper>
+                  </PostIconWrapper>
+                  <PostInfoWrapper>
+                    <PostUserInfo>
+                      <PostUsername>{data.posterName}</PostUsername>
+                      {data.timestamp && (
+                        <PostTimestamp>
+                          {getTimeAgo(currentTime, data.timestamp.seconds)}
+                        </PostTimestamp>
+                      )}
+                    </PostUserInfo>
+                    <PostContent
+                      onClick={() => handleTargetPost(data.bookmarkedId)}
+                    >
+                      {data.text}
+                      {data.images.map((image, index) => (
+                        <Image
+                          key={index}
+                          src={image}
+                          alt={"post image"}
+                          height={45}
+                          width={45}
+                          objectFit="cover"
+                        />
+                      ))}
+                    </PostContent>
+                    <PostInteractWrapper>
+                      <Tippy content="comments">
                         <PostInteractIcon
                           onClick={() =>
-                            handleIdDelete("bookmarks", markedPostId)
+                            handleCommentsExpand(data.bookmarkedId)
                           }
                         >
-                          <BsTrash />
+                          <FaRegCommentDots />
+
+                          <CommentsAmountWrapper>
+                            {data.commentsAmount !== 0 && data.commentsAmount}
+                          </CommentsAmountWrapper>
                         </PostInteractIcon>
                       </Tippy>
-                    )}
-                  </PostInteractWrapper>
-                </PostInfoWrapper>
-              </PostContainer>
 
-              <CommentsBody
-                commentsExpandLocations={commentsExpandLocations}
-                postId={data.bookmarkedId}
-                posterName={data.posterName}
-                posterEmail={data.posterEmail}
-                readOnly={true}
-                // commentsAmount={data.commentsAmount}
-                session={session}
-              />
-            </PostBlockContainer>
-          ))}
+                      {session.user.email === data.posterEmail && (
+                        <Tippy content="delete">
+                          <PostInteractIcon
+                            onClick={() =>
+                              handleIdDelete("bookmarks", markedPostId)
+                            }
+                          >
+                            <BsTrash />
+                          </PostInteractIcon>
+                        </Tippy>
+                      )}
+                    </PostInteractWrapper>
+                  </PostInfoWrapper>
+                </PostContainer>
+
+                <CommentsBody
+                  commentsExpandLocations={commentsExpandLocations}
+                  postId={data.bookmarkedId}
+                  posterName={data.posterName}
+                  posterEmail={data.posterEmail}
+                  readOnly={true}
+                  // commentsAmount={data.commentsAmount}
+                  session={session}
+                />
+              </PostBlockContainer>
+            ))
+          ) : (
+            <PostLoginConvincer onClick={signIn}>
+              Please Login to unlock this feature.
+            </PostLoginConvincer>
+          )}
         </PostsBodyWrapper>
       </PostsBodyContainer>
     </HomeContainer>
@@ -179,6 +187,12 @@ const PostsBodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+`;
+
+const PostLoginConvincer = styled.h1`
+  padding: 30px 10px;
+  cursor: pointer;
+  color: rgb(29, 155, 240);
 `;
 
 const PostBlockContainer = styled.div`
@@ -268,4 +282,9 @@ const PostInteractIcon = styled.div`
     background-color: #d4f7ff;
     color: black;
   }
+`;
+
+const CommentsAmountWrapper = styled.span`
+  display: flex;
+  font-size: 16px;
 `;

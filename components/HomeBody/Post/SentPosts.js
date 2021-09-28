@@ -35,10 +35,6 @@ export default function SentPosts({ session }) {
     setCurrentTime(Date.now());
   }, []);
 
-  // console.log(posts[0].data.timestamp.seconds);
-
-  // console.log(posts[0]);
-
   const [commentsExpandLocations, setCommentsExpandLocations] = useState([]);
 
   const handleCommentsExpand = (postId) => {

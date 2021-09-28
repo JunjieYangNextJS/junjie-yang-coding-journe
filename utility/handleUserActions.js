@@ -33,6 +33,7 @@ const handlePostBookmark = async (postId, data, session) => {
       posterName: data.posterName,
       posterIcon: data.posterIcon,
       bookmarkedId: postId,
+      commentsAmount: data.commentsAmount,
       timestamp,
     });
   } else {

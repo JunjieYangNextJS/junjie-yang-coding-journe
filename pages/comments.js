@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { useSession } from "next-auth/client";
+import { useSession, signIn } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
 import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
@@ -43,54 +43,60 @@ export default function commentsPage() {
           <h2>Comments</h2>{" "}
         </Header>
         <PostsBodyWrapper>
-          {myComments.map(({ myCommentsId, data }) => (
-            <PostBlockContainer key={myCommentsId}>
-              <PostContainer>
-                <PostIconWrapper>
-                  <ImageWrapper>
-                    <Image
-                      src={data.commenterIcon}
-                      alt={"commenter icon"}
-                      height={45}
-                      width={45}
-                      objectFit="cover"
-                    />
-                  </ImageWrapper>
-                </PostIconWrapper>
-                <PostInfoWrapper>
-                  <PostUserInfo>
-                    <PostUsername>{data.commenterName}</PostUsername>
-                    {data.timestamp && (
-                      <PostTimestamp>
-                        {getTimeAgo(currentTime, data.timestamp.seconds)}
-                      </PostTimestamp>
-                    )}
-                  </PostUserInfo>
+          {session ? (
+            myComments.map(({ myCommentsId, data }) => (
+              <PostBlockContainer key={myCommentsId}>
+                <PostContainer>
+                  <PostIconWrapper>
+                    <ImageWrapper>
+                      <Image
+                        src={data.commenterIcon}
+                        alt={"commenter icon"}
+                        height={45}
+                        width={45}
+                        objectFit="cover"
+                      />
+                    </ImageWrapper>
+                  </PostIconWrapper>
+                  <PostInfoWrapper>
+                    <PostUserInfo>
+                      <PostUsername>{data.commenterName}</PostUsername>
+                      {data.timestamp && (
+                        <PostTimestamp>
+                          {getTimeAgo(currentTime, data.timestamp.seconds)}
+                        </PostTimestamp>
+                      )}
+                    </PostUserInfo>
 
-                  <PostContent onClick={() => handleTargetPost(data.postId)}>
-                    {data.commentText}
-                  </PostContent>
-                  <PostInteractWrapper>
-                    {session && session.user.email === data.commenterEmail && (
-                      <Tippy content="delete">
-                        <PostInteractIcon
-                          onClick={() =>
-                            handleIdDelete(
-                              "comments",
-                              myCommentsId,
-                              data.postId
-                            )
-                          }
-                        >
-                          <BsTrash />
-                        </PostInteractIcon>
-                      </Tippy>
-                    )}
-                  </PostInteractWrapper>
-                </PostInfoWrapper>
-              </PostContainer>
-            </PostBlockContainer>
-          ))}
+                    <PostContent onClick={() => handleTargetPost(data.postId)}>
+                      {data.commentText}
+                    </PostContent>
+                    <PostInteractWrapper>
+                      {session.user.email === data.commenterEmail && (
+                        <Tippy content="delete">
+                          <PostInteractIcon
+                            onClick={() =>
+                              handleIdDelete(
+                                "comments",
+                                myCommentsId,
+                                data.postId
+                              )
+                            }
+                          >
+                            <BsTrash />
+                          </PostInteractIcon>
+                        </Tippy>
+                      )}
+                    </PostInteractWrapper>
+                  </PostInfoWrapper>
+                </PostContainer>
+              </PostBlockContainer>
+            ))
+          ) : (
+            <PostLoginConvincer onClick={signIn}>
+              Please Login to unlock this feature.
+            </PostLoginConvincer>
+          )}
         </PostsBodyWrapper>
       </PostsBodyContainer>
     </HomeContainer>
@@ -131,6 +137,12 @@ const PostsBodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+`;
+
+const PostLoginConvincer = styled.h1`
+  padding: 30px 10px;
+  cursor: pointer;
+  color: rgb(29, 155, 240);
 `;
 
 const PostBlockContainer = styled.div`
