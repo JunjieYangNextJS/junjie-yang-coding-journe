@@ -4,6 +4,7 @@ import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import { db, timestamp } from "../../firebase";
 import { handlePostBookmark } from "../../utility/handleUserActions";
+import getTimeAgo from "../../utility/getTimeAgo";
 import Image from "next/image";
 import { SiAiqfome } from "react-icons/si";
 import { RiImageAddLine } from "react-icons/ri";
@@ -22,6 +23,7 @@ export default function post() {
   const [session] = useSession();
 
   const [targetPost, setTargetPost] = useState(null);
+  const [currentTime, setCurrentTime] = useState(null);
 
   useEffect(async () => {
     if (id) {
@@ -33,10 +35,9 @@ export default function post() {
           router.push("/404");
         }
       });
+      setCurrentTime(Date.now());
     }
   }, [id]);
-
-  console.log("hello");
 
   const handlePostDelete = () => {
     db.collection("posts").doc(id).delete();
@@ -70,19 +71,28 @@ export default function post() {
                 </ImageWrapper>
               </PostIconWrapper>
               <PostInfoWrapper>
-                <PostUsername>{targetPost.posterName}</PostUsername>
+                <PostUserInfo>
+                  <PostUsername>{targetPost.posterName}</PostUsername>
+                  {targetPost.timestamp && (
+                    <PostTimestamp>
+                      {getTimeAgo(currentTime, targetPost.timestamp.seconds)}
+                    </PostTimestamp>
+                  )}
+                </PostUserInfo>
                 <PostContent>
-                  {targetPost.text}
-                  {targetPost.images.map((image, index) => (
-                    <Image
-                      key={index}
-                      src={image}
-                      alt={"post image"}
-                      height={45}
-                      width={45}
-                      objectFit="cover"
-                    />
-                  ))}
+                  <PostText>{targetPost.text}</PostText>
+                  <PostImages>
+                    {targetPost.images.map((image, index) => (
+                      <Image
+                        key={index}
+                        src={image}
+                        alt={"post image"}
+                        height={45}
+                        width={45}
+                        objectFit="cover"
+                      />
+                    ))}
+                  </PostImages>
                 </PostContent>
                 <PostInteractWrapper>
                   {session && (
@@ -150,6 +160,7 @@ const PostBodyContainer = styled.div`
 const PostBlockContainer = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 900px;
 `;
 
 const PostContainer = styled.div`
@@ -182,12 +193,21 @@ const PostInfoWrapper = styled.div`
   /* justify-content: space-between; */
 `;
 
+const PostUserInfo = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
 const PostUsername = styled.div`
   display: flex;
   font-weight: 700;
-  font-size: 17px;
+  font-size: 18px;
   margin-bottom: 2px;
   overflow-wrap: break-word;
+`;
+
+const PostTimestamp = styled.div`
+  margin-top: 1px;
 `;
 
 const PostContent = styled.div`
@@ -199,6 +219,14 @@ const PostContent = styled.div`
   line-height: 1.7;
   text-overflow: ellipsis;
 `;
+
+const PostText = styled.div`
+  margin-bottom: 10px;
+  font-size: 18px;
+  word-spacing: 1px;
+`;
+
+const PostImages = styled.div``;
 
 const PostInteractWrapper = styled.div`
   display: flex;

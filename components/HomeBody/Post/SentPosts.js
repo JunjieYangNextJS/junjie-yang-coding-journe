@@ -245,6 +245,7 @@ const PostContent = styled.div`
 
 const PostText = styled.div`
   margin-bottom: 10px;
+  font-size: 17px;
 `;
 
 const PostImages = styled.div``;

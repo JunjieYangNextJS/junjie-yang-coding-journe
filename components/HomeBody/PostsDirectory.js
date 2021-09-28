@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled, { css } from "styled-components";
 
 export default function PostsDirectory() {
-  const [selectedProject, setSelectedProject] = useState(1);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   const handleSelectProject = (project) => {
     setSelectedProject(project);
