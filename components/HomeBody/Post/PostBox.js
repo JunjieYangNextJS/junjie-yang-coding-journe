@@ -4,6 +4,7 @@ import Image from "next/image";
 import { timestamp, db, storage } from "../../../firebase";
 import { SiAiqfome } from "react-icons/si";
 import { RiImageAddLine } from "react-icons/ri";
+import TextareaAutosize from "react-textarea-autosize";
 
 export default function PostBox({ session }) {
   const [postInput, setPostInput] = useState("");
@@ -57,7 +58,7 @@ export default function PostBox({ session }) {
         posterIcon: session.user.image,
         text: postInput,
         images: urls,
-        project: 1,
+        project: 0,
         bookmarked: [],
         commentsAmount: 0,
         timestamp,
@@ -98,7 +99,7 @@ export default function PostBox({ session }) {
               value={postInput}
               onChange={(e) => setPostInput(e.target.value)}
               placeholder="Share your thoughts..."
-              maxLength="500"
+              maxLength="700"
             />
             <PostAuthorization>
               <SiAiqfome />
@@ -165,15 +166,16 @@ const ImageWrapper = styled.div`
 `;
 
 const PostWritingForm = styled.form`
-  width: max(400px, 100%);
+  /* width: max(400px, 100%); */
 `;
 
-const PostInputBox = styled.input`
+const PostInputBox = styled(TextareaAutosize)`
   border: none;
   outline: none;
   height: 45px;
   width: 500px;
   font-size: 18px;
+  padding: 4px 1px 7px;
   /* margin-bottom: 20px; */
 `;
 

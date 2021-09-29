@@ -56,7 +56,7 @@ export default function CommentsBody({
             value={commentInput}
             onChange={(e) => setCommentInput(e.target.value)}
             placeholder="Comment here..."
-            maxLength="50"
+            maxLength="300"
           />
 
           <CommentSubmitSection

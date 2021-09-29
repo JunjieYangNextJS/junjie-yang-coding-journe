@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { handleIdDelete } from "../../../utility/handleUserActions";
+import getTimeAgo from "../../../utility/getTimeAgo";
 import { db } from "../../../firebase";
 import { BsTrash } from "react-icons/bs";
 import { FiEdit } from "react-icons/fi";
@@ -16,6 +17,7 @@ export default function SentComments({
   readOnly,
 }) {
   const [comments, setComments] = useState([]);
+  const [currentTime, setCurrentTime] = useState(null);
 
   useEffect(() => {
     db.collection("comments")
@@ -28,6 +30,7 @@ export default function SentComments({
         }));
         setComments(tempComments);
       });
+    setCurrentTime(Date.now());
   }, []);
 
   const [commentEdit, setCommentEdit] = useState("");
@@ -58,10 +61,19 @@ export default function SentComments({
                 </ImageWrapper>
               </CommenterIconSection>
               <SentCommentBody>
-                <SentCommentUsername>{data.commenterName}</SentCommentUsername>
-                {data.commenterEmail !== posterEmail && (
-                  <CommenterAtPoster>@{data.posterName}</CommenterAtPoster>
-                )}
+                <SentCommentUserInfo>
+                  <SentCommentUsername>
+                    {data.commenterName}
+                  </SentCommentUsername>
+                  {data.timestamp && (
+                    <SentCommentTimestamp>
+                      {getTimeAgo(currentTime, data.timestamp.seconds)}
+                    </SentCommentTimestamp>
+                  )}
+                  {data.commenterEmail !== posterEmail && (
+                    <CommenterAtPoster>@{data.posterName}</CommenterAtPoster>
+                  )}
+                </SentCommentUserInfo>
 
                 {commentId !== commentEdit ? (
                   <SentCommentContent>{data.commentText}</SentCommentContent>
@@ -135,9 +147,18 @@ const SentCommentBody = styled.div`
   flex-direction: column;
   margin-top: -5px;
 `;
+
+const SentCommentUserInfo = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const SentCommentTimestamp = styled.div``;
+
 const SentCommentUsername = styled.div`
   font-weight: 700;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
+  overflow: hidden;
 `;
 
 const CommenterAtPoster = styled.div`

@@ -239,13 +239,11 @@ const PostUsername = styled.div`
   display: flex;
   font-weight: 700;
   font-size: 17px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   overflow-wrap: break-word;
 `;
 
-const PostTimestamp = styled.div`
-  margin-top: 1px;
-`;
+const PostTimestamp = styled.div``;
 
 const PostContent = styled.div`
   color: rgb(15, 20, 25);

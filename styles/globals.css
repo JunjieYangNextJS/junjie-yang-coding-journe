@@ -29,3 +29,15 @@ button {
   background: none;
   cursor: pointer;
 }
+
+textarea {
+  border: none;
+  overflow: auto;
+  outline: none;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+  box-shadow: none;
+  font-weight: 400;
+  resize: none;
+}

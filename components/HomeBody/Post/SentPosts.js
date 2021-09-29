@@ -162,7 +162,6 @@ export default function SentPosts({ session }) {
             postId={postId}
             posterName={data.posterName}
             posterEmail={data.posterEmail}
-            // commentsAmount={data.commentsAmount}
             session={session}
           />
         </PostBlockContainer>
@@ -220,13 +219,11 @@ const PostUsername = styled.div`
   display: flex;
   font-weight: 700;
   font-size: 17px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   overflow-wrap: break-word;
 `;
 
-const PostTimestamp = styled.div`
-  margin-top: 1px;
-`;
+const PostTimestamp = styled.div``;
 
 const PostContent = styled.div`
   color: rgb(15, 20, 25);
@@ -240,7 +237,6 @@ const PostContent = styled.div`
 `;
 
 const PostText = styled.div`
-  margin-bottom: 10px;
   font-size: 17px;
 `;
 

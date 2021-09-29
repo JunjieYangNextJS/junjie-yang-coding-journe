@@ -41,7 +41,7 @@ export default function CommentEditBox({
       <CommentInputBox
         value={newCommentInput}
         onChange={(e) => setNewCommentInput(e.target.value)}
-        maxLength="50"
+        maxLength="300"
       />
 
       <CommentSubmitSection onClick={(e) => submitEditedComment(e)}>
