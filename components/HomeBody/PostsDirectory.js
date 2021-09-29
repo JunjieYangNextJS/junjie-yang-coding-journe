@@ -18,7 +18,7 @@ export default function PostsDirectory() {
             label={1}
             selectedProject={selectedProject}
           >
-            E-Commerce Project
+            Coding Journey
           </NavElement>
         </NavElementWrapper>
 
@@ -29,7 +29,7 @@ export default function PostsDirectory() {
             label={2}
             selectedProject={selectedProject}
           >
-            Memory Game
+            E-Commerce Project
           </NavElement>
         </NavElementWrapper>
 
@@ -40,7 +40,7 @@ export default function PostsDirectory() {
             label={3}
             selectedProject={selectedProject}
           >
-            Whac-a-Poro Game
+            Memory Game
           </NavElement>
         </NavElementWrapper>
 
@@ -51,7 +51,7 @@ export default function PostsDirectory() {
             label={4}
             selectedProject={selectedProject}
           >
-            Coding Journey
+            Whac-a-Poro Game
           </NavElement>
         </NavElementWrapper>
       </NavElementsContainer>
