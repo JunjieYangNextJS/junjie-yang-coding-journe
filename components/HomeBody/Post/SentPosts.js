@@ -93,9 +93,9 @@ export default function SentPosts({ session }) {
                       key={index}
                       src={image}
                       alt={"post image"}
-                      height={45}
-                      width={45}
-                      objectFit="cover"
+                      height={300}
+                      width={300}
+                      objectFit="contain"
                     />
                   ))}
                 </PostImages>
@@ -240,7 +240,9 @@ const PostText = styled.div`
   font-size: 17px;
 `;
 
-const PostImages = styled.div``;
+const PostImages = styled.div`
+  position: relative;
+`;
 
 const PostInteractWrapper = styled.div`
   display: flex;

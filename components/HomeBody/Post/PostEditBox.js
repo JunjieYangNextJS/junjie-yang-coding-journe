@@ -15,16 +15,23 @@ export default function PostEditBox({
 }) {
   const [newPostInput, setNewPostInput] = useState(postText);
   const [newImages, setNewImages] = useState([]);
-  const [newUrls, setNewUrls] = useState([...postImages]);
+  const [newUrls, setNewUrls] = useState([]);
 
   const handleImagesEdit = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
       const tempImage = e.target.files[i];
       tempImage["id"] = Math.random();
-      setNewImages((prevState) => [...prevState, tempImage]);
-      setNewUrls([]);
+      if (newImages.length === 0) {
+        setNewImages((prevState) => [...prevState, tempImage]);
+      } else {
+        setNewUrls([]);
+        setNewImages((prevState) => [...prevState, tempImage]);
+      }
     }
   };
+
+  console.log(newImages, "images");
+  console.log(newUrls, "urls");
 
   useEffect(() => {
     if (newImages.length === 0) return;
@@ -55,17 +62,38 @@ export default function PostEditBox({
       .catch(() => alert("Images are not successfully updated."));
   }, [newImages]);
 
+  // const editPost = (e) => {
+  //   e.preventDefault();
+
+  //   const uploadEditedPost = async () => {
+  //     const idRef = db.collection("posts").doc(postId);
+  //     try {
+  //       if (newPostInput !== postText) {
+  //         idRef.update({ text: newPostInput });
+  //       }
+  //       if (newUrls !== postImages) {
+  //         idRef.update({ images: [...newUrls] });
+  //       }
+  //     } catch {
+  //       alert("Post Update failed.");
+  //     }
+  //   };
   const editPost = (e) => {
     e.preventDefault();
 
     const uploadEditedPost = async () => {
-      const idRef = db.collection("posts").doc(postId);
+      const postsRef = db.collection("posts");
+      const snapshot = await postsRef.doc(postId).get();
       try {
         if (newPostInput !== postText) {
-          idRef.update({ text: newPostInput });
+          postsRef.doc(postId).update({ text: newPostInput });
         }
-        if (newUrls !== postImages) {
-          idRef.update({ images: [...newUrls] });
+        if (
+          snapshot.data().images.sort().join(";") !== newUrls.sort().join(";")
+        ) {
+          postsRef
+            .doc(postId)
+            .update({ images: snapshot.data().images.concat(newUrls) });
         }
       } catch {
         alert("Post Update failed.");
@@ -74,6 +102,7 @@ export default function PostEditBox({
 
     const resetEditedPost = async () => {
       setNewImages([]);
+      setNewUrls([]);
       setPostEditExpandLocation("");
     };
 
@@ -81,6 +110,18 @@ export default function PostEditBox({
 
     for (const editAction of postEditActions) {
       editAction();
+    }
+  };
+
+  const handleDeleteImages = async () => {
+    const postsRef = db.collection("posts");
+
+    try {
+      await postsRef.doc(postId).update({
+        images: [],
+      });
+    } catch {
+      alert("images delete failed");
     }
   };
 
@@ -122,22 +163,23 @@ export default function PostEditBox({
                   <ImageIconWrapper>
                     <RiImageAddLine />
                   </ImageIconWrapper>
-                  Images
+                  Add Images
                 </UploadImageLabel>
-                <UploadImageInfo
+                <span onClick={handleDeleteImages}>Delete Images</span>
+                {/* <UploadImageInfo
                   newImages={newImages}
                   newUrls={newUrls}
                   postImages={postImages}
                 >
                   {newImages.length} images are uploading...
-                </UploadImageInfo>
+                </UploadImageInfo> */}
               </PostImageSection>
               <PostSubmitButton
                 onClick={(e) => editPost(e)}
                 disabled={
-                  newUrls.length === newImages.length ||
-                  postImages.sort().join(";") === newUrls.sort().join(";")
-                    ? false
+                  newUrls.length === newImages.length
+                    ? // postImages.sort().join(";") === newUrls.sort().join(";")
+                      false
                     : true
                 }
               >
