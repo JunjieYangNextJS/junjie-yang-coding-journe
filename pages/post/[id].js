@@ -83,14 +83,15 @@ export default function post() {
                   <PostText>{targetPost.text}</PostText>
                   <PostImages>
                     {targetPost.images.map((image, index) => (
-                      <Image
-                        key={index}
-                        src={image}
-                        alt={"post image"}
-                        height={45}
-                        width={45}
-                        objectFit="cover"
-                      />
+                      <PostImage key={index}>
+                        <Image
+                          src={image}
+                          alt={"post image"}
+                          height={280}
+                          width={280}
+                          objectFit="cover"
+                        />
+                      </PostImage>
                     ))}
                   </PostImages>
                 </PostContent>
@@ -219,12 +220,18 @@ const PostContent = styled.div`
 `;
 
 const PostText = styled.div`
-  margin-bottom: 10px;
   font-size: 18px;
+  margin-bottom: 12px;
   word-spacing: 1px;
 `;
 
-const PostImages = styled.div``;
+const PostImages = styled.div`
+  position: relative;
+`;
+
+const PostImage = styled.span`
+  margin: 5px 5px;
+`;
 
 const PostInteractWrapper = styled.div`
   display: flex;

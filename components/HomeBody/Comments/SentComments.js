@@ -31,6 +31,10 @@ export default function SentComments({
         setComments(tempComments);
       });
     setCurrentTime(Date.now());
+
+    return () => {
+      setCurrentTime(null);
+    };
   }, []);
 
   const [commentEdit, setCommentEdit] = useState("");

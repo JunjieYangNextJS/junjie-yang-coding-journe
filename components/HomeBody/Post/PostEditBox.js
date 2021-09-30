@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { db, storage } from "../../../firebase";
+import TextareaAutosize from "react-textarea-autosize";
 import { SiAiqfome } from "react-icons/si";
 import { RiImageAddLine } from "react-icons/ri";
 
@@ -29,9 +30,6 @@ export default function PostEditBox({
       }
     }
   };
-
-  console.log(newImages, "images");
-  console.log(newUrls, "urls");
 
   useEffect(() => {
     if (newImages.length === 0) return;
@@ -145,6 +143,7 @@ export default function PostEditBox({
             <PostInputBox
               type="text"
               value={newPostInput}
+              maxLength="700"
               onChange={(e) => setNewPostInput(e.target.value)}
             />
             <PostAuthorization>
@@ -165,7 +164,9 @@ export default function PostEditBox({
                   </ImageIconWrapper>
                   Add Images
                 </UploadImageLabel>
-                <span onClick={handleDeleteImages}>Delete Images</span>
+                <DeleteImageLabel onClick={handleDeleteImages}>
+                  Delete Images
+                </DeleteImageLabel>
                 {/* <UploadImageInfo
                   newImages={newImages}
                   newUrls={newUrls}
@@ -213,12 +214,22 @@ const UserIcon = styled.div`
 
 const PostWritingForm = styled.form``;
 
-const PostInputBox = styled.input`
+// const PostInputBox = styled.input`
+//   border: none;
+//   outline: none;
+//   height: 45px;
+//   width: 500px;
+//   font-size: 18px;
+//   /* margin-bottom: 20px; */
+// `;
+
+const PostInputBox = styled(TextareaAutosize)`
   border: none;
   outline: none;
   height: 45px;
   width: 500px;
   font-size: 18px;
+  padding: 4px 1px 7px;
   /* margin-bottom: 20px; */
 `;
 
@@ -262,14 +273,18 @@ const UploadImageLabel = styled.label`
   cursor: pointer;
 `;
 
-const UploadImageInfo = styled.span`
-  font-style: italic;
-  visibility: ${({ newImages, newUrls, postImages }) =>
-    newImages.length === newUrls.length ||
-    postImages.sort().join(";") === newUrls.sort().join(";")
-      ? "hidden"
-      : "visible"};
+const DeleteImageLabel = styled.span`
+  cursor: pointer;
 `;
+
+// const UploadImageInfo = styled.span`
+//   font-style: italic;
+//   visibility: ${({ newImages, newUrls, postImages }) =>
+//     newImages.length === newUrls.length ||
+//     postImages.sort().join(";") === newUrls.sort().join(";")
+//       ? "hidden"
+//       : "visible"};
+// `;
 
 const PostSubmitButton = styled.button`
   font-size: 15px;

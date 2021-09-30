@@ -89,17 +89,21 @@ export default function bookmarksPage() {
                     <PostContent
                       onClick={() => handleTargetPost(data.bookmarkedId)}
                     >
-                      {data.text}
-                      {data.images.map((image, index) => (
-                        <Image
-                          key={index}
-                          src={image}
-                          alt={"post image"}
-                          height={45}
-                          width={45}
-                          objectFit="cover"
-                        />
-                      ))}
+                      <PostText>{data.text}</PostText>
+                      <PostImages>
+                        {data.images.map((image, index) => (
+                          <PostImage key={index}>
+                            {" "}
+                            <Image
+                              src={image}
+                              alt={"post image"}
+                              height={250}
+                              width={250}
+                              objectFit="contain"
+                            />
+                          </PostImage>
+                        ))}
+                      </PostImages>
                     </PostContent>
                     <PostInteractWrapper>
                       <Tippy content="comments">
@@ -254,6 +258,19 @@ const PostContent = styled.div`
   line-height: 1.7;
   text-overflow: ellipsis;
   cursor: pointer;
+`;
+
+const PostText = styled.div`
+  font-size: 17px;
+  margin-bottom: 7px;
+`;
+
+const PostImages = styled.div`
+  position: relative;
+`;
+
+const PostImage = styled.span`
+  margin: 3px 3px;
 `;
 
 const PostInteractWrapper = styled.div`

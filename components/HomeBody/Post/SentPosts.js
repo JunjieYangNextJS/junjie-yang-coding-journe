@@ -33,7 +33,12 @@ export default function SentPosts({ session }) {
         setPosts(tempPosts);
       });
     setCurrentTime(Date.now());
+    return () => {
+      setCurrentTime(null);
+    };
   }, []);
+
+  console.log("try");
 
   const [commentsExpandLocations, setCommentsExpandLocations] = useState([]);
 
@@ -89,14 +94,16 @@ export default function SentPosts({ session }) {
                 <PostText>{data.text}</PostText>
                 <PostImages>
                   {data.images.map((image, index) => (
-                    <Image
-                      key={index}
-                      src={image}
-                      alt={"post image"}
-                      height={300}
-                      width={300}
-                      objectFit="contain"
-                    />
+                    <PostImage key={index}>
+                      {" "}
+                      <Image
+                        src={image}
+                        alt={"post image"}
+                        height={250}
+                        width={250}
+                        objectFit="contain"
+                      />
+                    </PostImage>
                   ))}
                 </PostImages>
               </PostContent>
@@ -238,10 +245,15 @@ const PostContent = styled.div`
 
 const PostText = styled.div`
   font-size: 17px;
+  margin-bottom: 7px;
 `;
 
 const PostImages = styled.div`
   position: relative;
+`;
+
+const PostImage = styled.span`
+  margin: 3px 3px;
 `;
 
 const PostInteractWrapper = styled.div`
