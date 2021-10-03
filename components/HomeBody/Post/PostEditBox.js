@@ -7,11 +7,11 @@ import { SiAiqfome } from "react-icons/si";
 import { RiImageAddLine } from "react-icons/ri";
 
 export default function PostEditBox({
-  postEditExpandLocation,
-  setPostEditExpandLocation,
+  postEditExpand,
+  setPostEditExpand,
   postId,
   postText,
-  postImages,
+  posterEmail,
   session,
 }) {
   const [newPostInput, setNewPostInput] = useState(postText);
@@ -60,22 +60,6 @@ export default function PostEditBox({
       .catch(() => alert("Images are not successfully updated."));
   }, [newImages]);
 
-  // const editPost = (e) => {
-  //   e.preventDefault();
-
-  //   const uploadEditedPost = async () => {
-  //     const idRef = db.collection("posts").doc(postId);
-  //     try {
-  //       if (newPostInput !== postText) {
-  //         idRef.update({ text: newPostInput });
-  //       }
-  //       if (newUrls !== postImages) {
-  //         idRef.update({ images: [...newUrls] });
-  //       }
-  //     } catch {
-  //       alert("Post Update failed.");
-  //     }
-  //   };
   const editPost = (e) => {
     e.preventDefault();
 
@@ -101,7 +85,7 @@ export default function PostEditBox({
     const resetEditedPost = async () => {
       setNewImages([]);
       setNewUrls([]);
-      setPostEditExpandLocation("");
+      setPostEditExpand("");
     };
 
     const postEditActions = [uploadEditedPost, resetEditedPost];
@@ -127,8 +111,9 @@ export default function PostEditBox({
     <>
       {session && (
         <PostPostingSection
-          postEditExpandLocation={postEditExpandLocation}
-          location={postId}
+          postEditExpand={postEditExpand}
+          userEmail={session.user.email}
+          posterEmail={posterEmail}
         >
           <UserIcon>
             <Image
@@ -177,12 +162,7 @@ export default function PostEditBox({
               </PostImageSection>
               <PostSubmitButton
                 onClick={(e) => editPost(e)}
-                disabled={
-                  newUrls.length === newImages.length
-                    ? // postImages.sort().join(";") === newUrls.sort().join(";")
-                      false
-                    : true
-                }
+                disabled={newUrls.length === newImages.length ? false : true}
               >
                 Confirm
               </PostSubmitButton>
@@ -195,8 +175,8 @@ export default function PostEditBox({
 }
 
 const PostPostingSection = styled.div`
-  display: ${({ location, postEditExpandLocation }) =>
-    postEditExpandLocation.includes(location) ? "flex" : "none"};
+  display: ${({ postEditExpand, userEmail, posterEmail }) =>
+    userEmail === posterEmail && postEditExpand ? "flex" : "none"};
   flex-direction: row;
   border: 1px solid rgb(239, 243, 244);
   padding: 10px 18px;

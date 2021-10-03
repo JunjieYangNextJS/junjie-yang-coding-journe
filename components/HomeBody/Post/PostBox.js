@@ -15,7 +15,12 @@ export default function PostBox({ session }) {
     for (let i = 0; i < e.target.files.length; i++) {
       const tempImage = e.target.files[i];
       tempImage["id"] = Math.random();
-      setImages((prevState) => [...prevState, tempImage]);
+      if (images.length === 0) {
+        setImages((prevState) => [...prevState, tempImage]);
+      } else {
+        setUrls([]);
+        setImages((prevState) => [...prevState, tempImage]);
+      }
     }
   };
 
@@ -120,7 +125,8 @@ export default function PostBox({ session }) {
                   Images
                 </UploadImageLabel>
                 <UploadImageInfo images={images} urls={urls}>
-                  {images.length} images are uploading...
+                  {images.length} {images.length === 1 ? "image" : "images"} are
+                  uploading...
                 </UploadImageInfo>
               </PostImageSection>
               <PostSubmitButton

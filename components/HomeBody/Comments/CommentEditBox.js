@@ -9,8 +9,6 @@ export default function CommentEditBox({
 }) {
   const [newCommentInput, setNewCommentInput] = useState(commentText);
 
-  console.log(commentText);
-
   const submitEditedComment = (e) => {
     e.preventDefault();
 

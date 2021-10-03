@@ -44,12 +44,10 @@ export default function post() {
     router.push("/404");
   };
 
-  const [postEditExpandLocation, setPostEditExpandLocation] = useState("");
+  const [postEditExpand, setPostEditExpand] = useState(true);
 
-  const handlePostEditExpand = (postId) => {
-    if (postEditExpandLocation === postId) {
-      setPostEditExpandLocation("");
-    } else setPostEditExpandLocation(postId);
+  const handlePostEditExpand = () => {
+    setPostEditExpand(!postEditExpand);
   };
 
   return (
@@ -87,9 +85,9 @@ export default function post() {
                         <Image
                           src={image}
                           alt={"post image"}
-                          height={280}
-                          width={280}
-                          objectFit="cover"
+                          height={400}
+                          width={400}
+                          objectFit="contain"
                         />
                       </PostImage>
                     ))}
@@ -114,9 +112,7 @@ export default function post() {
                   )}
                   {session && session.user.email === targetPost.posterEmail && (
                     <Tippy content="edit">
-                      <PostInteractIcon
-                        onClick={() => handlePostEditExpand(id)}
-                      >
+                      <PostInteractIcon onClick={handlePostEditExpand}>
                         <FiEdit />
                       </PostInteractIcon>
                     </Tippy>
@@ -132,11 +128,11 @@ export default function post() {
               </PostInfoWrapper>
             </PostContainer>
             <PostEditBox
-              postEditExpandLocation={postEditExpandLocation}
-              setPostEditExpandLocation={setPostEditExpandLocation}
+              postEditExpand={postEditExpand}
+              setPostEditExpand={setPostEditExpand}
               postId={id}
               postText={targetPost.text}
-              postImages={targetPost.images}
+              posterEmail={targetPost.posterEmail}
               session={session}
             />
             <CommentsBody

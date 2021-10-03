@@ -38,8 +38,6 @@ export default function SentPosts({ session }) {
     };
   }, []);
 
-  console.log("try");
-
   const [commentsExpandLocations, setCommentsExpandLocations] = useState([]);
 
   const handleCommentsExpand = (postId) => {
@@ -48,21 +46,21 @@ export default function SentPosts({ session }) {
           commentsExpandLocations.filter((location) => location !== postId)
         )
       : setCommentsExpandLocations((prevLocation) => [...prevLocation, postId]);
-    postEditExpandLocation === postId && setPostEditExpandLocation("");
+    // postEditExpandLocation === postId && setPostEditExpandLocation("");
   };
 
-  const [postEditExpandLocation, setPostEditExpandLocation] = useState("");
+  // const [postEditExpand, setPostEditExpand] = useState(false);
 
-  const handlePostEditExpand = (postId) => {
-    if (postEditExpandLocation === postId) {
-      setPostEditExpandLocation("");
-    } else {
-      setPostEditExpandLocation(postId);
-      setCommentsExpandLocations(
-        commentsExpandLocations.filter((location) => location !== postId)
-      );
-    }
-  };
+  // const handlePostEditExpand = (postId) => {
+  //   if (postEditExpandLocation === postId) {
+  //     setPostEditExpandLocation("");
+  //   } else {
+  //     setPostEditExpandLocation(postId);
+  //     setCommentsExpandLocations(
+  //       commentsExpandLocations.filter((location) => location !== postId)
+  //     );
+  //   }
+  // };
 
   return (
     <PostsBodyContainer>
@@ -138,7 +136,8 @@ export default function SentPosts({ session }) {
                 {session && session.user.email === data.posterEmail && (
                   <Tippy content="edit">
                     <PostInteractIcon
-                      onClick={() => handlePostEditExpand(postId)}
+                      // onClick={() => handlePostEditExpand(postId)}
+                      onClick={() => handleTargetPost(postId)}
                     >
                       <FiEdit />
                     </PostInteractIcon>
@@ -156,14 +155,13 @@ export default function SentPosts({ session }) {
               </PostInteractWrapper>
             </PostInfoWrapper>
           </PostContainer>
-          <PostEditBox
+          {/* <PostEditBox
             postEditExpandLocation={postEditExpandLocation}
             setPostEditExpandLocation={setPostEditExpandLocation}
             postId={postId}
             postText={data.text}
-            postImages={data.images}
             session={session}
-          />
+          /> */}
           <CommentsBody
             commentsExpandLocations={commentsExpandLocations}
             postId={postId}
