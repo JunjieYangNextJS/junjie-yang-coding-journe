@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
+import Image from "next/dist/client/image";
 import { useGetSelectedNav } from "../contexts/SelectedNavContext";
+import profilePic from "../image/profilePic.jpg";
+import { FiPhone } from "react-icons/fi";
+import { AiOutlineMail } from "react-icons/ai";
 
 export default function profile() {
   const setSelectedNav = useGetSelectedNav();
@@ -11,14 +15,105 @@ export default function profile() {
   });
 
   return (
-    <HomeContainer>
+    <ProfileContainer>
       <Navbar />
-      <PostsBodyContainer></PostsBodyContainer>
-    </HomeContainer>
+      <BodyContainer>
+        <BodyWrapper>
+          <Header>
+            <h2>Profile</h2>{" "}
+          </Header>
+          <UserPictureSection>
+            <UserPictureContainer>
+              <UserPictureWrapper>
+                <ImageWrapper>
+                  <Image
+                    src={profilePic}
+                    alt={"user icon"}
+                    height={150}
+                    width={150}
+                    objectFit="cover"
+                  />
+                </ImageWrapper>
+              </UserPictureWrapper>
+              <UserNameWrapper>Junjie Yang</UserNameWrapper>
+            </UserPictureContainer>
+          </UserPictureSection>
+
+          <UserContactContainer>
+            <ContactWrapper>
+              <FiPhone fontSize="24px" />
+              <ContactTextWrapper>
+                <ContactUpperText>Phone</ContactUpperText>
+                <ContactBottomText>925-953-4081</ContactBottomText>
+              </ContactTextWrapper>
+            </ContactWrapper>
+            <ContactWrapper>
+              <AiOutlineMail fontSize="24px" />
+              <a
+                target="_blank"
+                href="https://mail.google.com/"
+                rel="noopener noreferrer"
+              >
+                <ContactTextWrapper>
+                  <ContactUpperText>Email</ContactUpperText>
+
+                  <ContactBottomText>jjyusa2010@gmail.com</ContactBottomText>
+                </ContactTextWrapper>
+              </a>
+            </ContactWrapper>
+          </UserContactContainer>
+        </BodyWrapper>
+        <BodyPortfolio>
+          <BulletPointContainer>
+            <BulletPointWrapper>
+              <BulletPointLabel>Skills</BulletPointLabel>
+              <BulletPointList>
+                <BulletPoint>Next JS</BulletPoint>
+                <BulletPoint>React</BulletPoint>
+                <BulletPoint>JavaScript</BulletPoint>
+                <BulletPoint>HTML</BulletPoint>
+                <BulletPoint>CSS</BulletPoint>
+                <BulletPoint>Firebase</BulletPoint>
+              </BulletPointList>
+            </BulletPointWrapper>
+            <BulletPointWrapper>
+              <BulletPointLabel>Personality</BulletPointLabel>
+              <BulletPointList>
+                <BulletPoint>Communicative</BulletPoint>
+                <BulletPoint>Creative</BulletPoint>
+                <BulletPoint>Dedicated</BulletPoint>
+                <BulletPoint>Easygoing</BulletPoint>
+                <BulletPoint>Open minded</BulletPoint>
+                <BulletPoint>Love learning</BulletPoint>
+              </BulletPointList>
+            </BulletPointWrapper>
+          </BulletPointContainer>
+          <AboutMeContainer>
+            I am Junjie Yang, a 24 years old self-taught front-end developer who
+            has falling in love with programming for 2 years. Two years ago, I
+            helped my mother launching her career as a travel agent. We were
+            mainly selling cruise tickets through her company's website. We were
+            killing it at the start, but fell off short very quickly as her
+            company's website was not designed to keep consumers but to kick
+            them out. It didn't have many features and was full of bugs. At that
+            time I thought to myself, 'If the website was better, we could have
+            sold so much more'. That really was highly and deeply inspiring for
+            me and became a turning point of my life. I was already learning
+            Python in my off-times, so it was very easy for me to transition
+            right into Javascript, HTML, CSS. When the pandemic hit, I went
+            all-in on learning the skills I need to become a great front-end
+            developer, mastering React then NextJS. I believe you have checked
+            out all my web app's functionalities at this point. I believe I have
+            shown my capability of building great things. If you are interested,
+            please contact me :)
+          </AboutMeContainer>
+        </BodyPortfolio>
+      </BodyContainer>
+    </ProfileContainer>
   );
 }
 
-const HomeContainer = styled.div`
+const ProfileContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -26,11 +121,135 @@ const HomeContainer = styled.div`
   height: auto;
 `;
 
-const PostsBodyContainer = styled.div`
+const BodyContainer = styled.div`
+  display: flex;
+  /* flex-direction: column;
+  align-items: center;
+  gap: 20px; */
+  max-width: 1200px;
+  min-width: 400px;
+  gap: 60px;
+  color: #363636;
+  /* margin-top: 30px; */
+`;
+
+const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  width: 800px;
+  margin: 0 auto;
+  align-items: center;
+  /* border: 1px solid rgb(239, 243, 244); */
+  height: auto;
+`;
+
+const Header = styled.div`
+  display: flex;
+  /* border: 1px solid rgb(239, 243, 244); */
+  height: 60px;
+  width: 100%;
+  align-items: flex-start;
+
+  h2 {
+    font-size: 20px;
+    margin-left: 15px;
+  }
+`;
+
+const UserPictureSection = styled.div``;
+
+const UserPictureContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 30px auto;
+  align-items: center;
+  gap: 7px;
+`;
+
+const UserPictureWrapper = styled.div``;
+
+const UserNameWrapper = styled.div`
+  font-size: 23px;
+  font-weight: 700;
+`;
+
+const ImageWrapper = styled.div`
+  height: 150px;
+  width: 150px;
+  overflow: hidden;
+  border-radius: 200px;
+`;
+
+const UserContactContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+  background: linear-gradient(to left top, #cd42ff, #26e6ff);
+  padding: 25px 55px 32px 35px;
+  border-radius: 10px;
+`;
+
+const ContactWrapper = styled.div`
+  color: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+`;
+
+const ContactTextWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ContactUpperText = styled.div``;
+
+const ContactBottomText = styled.div`
+  font-weight: 700;
+  letter-spacing: 1px;
+`;
+
+const BodyPortfolio = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
   min-width: 400px;
-  border: 1px solid rgb(239, 243, 244);
-  /* margin-top: 30px; */
+  height: auto;
+  /* border: 1px solid rgb(239, 243, 244); */
+  color: #363636;
+  padding: 60px 50px;
+`;
+
+const BulletPointContainer = styled.div`
+  display: flex;
+  /* flex-direction: column; */
+  gap: 80px;
+`;
+
+const BulletPointWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+`;
+
+const BulletPointLabel = styled.div`
+  font-size: 20px;
+`;
+
+const BulletPointList = styled.ul``;
+
+const BulletPoint = styled.li`
+  font-size: 17px;
+
+  line-height: 1.4;
+`;
+
+const AboutMeContainer = styled.div`
+  margin-top: 50px;
+  text-indent: 20px;
+  font-size: 16px;
+  word-spacing: 1px;
+  line-height: 1.5;
 `;

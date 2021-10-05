@@ -41,7 +41,7 @@ export default function post() {
 
   const handlePostDelete = () => {
     db.collection("posts").doc(id).delete();
-    router.push("/404");
+    router.replace("/404");
   };
 
   const [postEditExpand, setPostEditExpand] = useState(true);
