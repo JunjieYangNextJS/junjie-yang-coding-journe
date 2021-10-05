@@ -13,6 +13,9 @@ import { IoBookmarksOutline } from "react-icons/io5";
 import { IoBookmarks } from "react-icons/io5";
 import { IoPersonOutline } from "react-icons/io5";
 import { IoPerson } from "react-icons/io5";
+import { FaRegUserCircle } from "react-icons/fa";
+import { BiLogIn } from "react-icons/bs";
+import { RiLoginCircleLine } from "react-icons/ri";
 
 export default function Navbar() {
   const [session] = useSession();
@@ -102,7 +105,13 @@ export default function Navbar() {
           </NavElementWrapper>
         </NavElementsContainer>
         <ContactMeSection>
-          <ContactMeButton>Contact Me</ContactMeButton>
+          <ContactMeButton
+            onClick={() => handleSelectNav("/profile")}
+            label={"/profile"}
+            selectedNav={selectedNav}
+          >
+            Contact Me
+          </ContactMeButton>
         </ContactMeSection>
         <DisplayUserWrapper>
           {session ? (
@@ -122,7 +131,12 @@ export default function Navbar() {
               </DisplayUserAccess>
             </DisplayUserSection>
           ) : (
-            <LoginSection onClick={signIn}>Login</LoginSection>
+            <LoginSection onClick={signIn}>
+              <LoginIcon>
+                <RiLoginCircleLine />
+              </LoginIcon>
+              <LoginLabel>Login</LoginLabel>
+            </LoginSection>
           )}
         </DisplayUserWrapper>
       </NavbarWrapper>
@@ -335,4 +349,23 @@ const LoginSection = styled.div`
   line-height: 2;
   font-weight: bold;
   cursor: pointer;
+`;
+
+const LoginIcon = styled.div`
+  color: rgb(29, 155, 240);
+
+  transition: all 0.2s ease-in;
+  :hover {
+    font-size: 30px;
+  }
+  @media screen and (min-width: 1049px) {
+    display: none;
+  }
+`;
+
+const LoginLabel = styled.div`
+  cursor: pointer;
+  @media screen and (max-width: 1050px) {
+    display: none;
+  }
 `;

@@ -234,19 +234,15 @@ const PostText = styled.div`
 `;
 
 const PostImages = styled.div`
+  display: flex;
   position: relative;
   @media screen and (max-width: 700px) {
-    width: 250px;
-    height: 250px;
+    flex-direction: column;
   }
 `;
 
-const PostImage = styled.span`
+const PostImage = styled.div`
   margin: 5px 5px;
-  @media screen and (max-width: 700px) {
-    width: 250px;
-    height: 250px;
-  }
 `;
 
 const PostInteractWrapper = styled.div`
