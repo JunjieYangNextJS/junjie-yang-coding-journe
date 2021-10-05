@@ -125,7 +125,8 @@ export default function PostBox({ session }) {
                   Images
                 </UploadImageLabel>
                 <UploadImageInfo images={images} urls={urls}>
-                  {images.length} {images.length === 1 ? "image" : "images"} are
+                  {images.length}{" "}
+                  {images.length === 1 ? "image is " : "images are "}
                   uploading...
                 </UploadImageInfo>
               </PostImageSection>
@@ -151,7 +152,7 @@ export default function PostBox({ session }) {
 const PostPostingSection = styled.div`
   display: flex;
   border: 1px solid rgb(239, 243, 244);
-  width: max(400px, 100%);
+
   /* box-shadow: 0 0 5px 1px rgb(29, 155, 240); */
   padding: 10px 18px;
   margin-top: 5px;
@@ -172,7 +173,7 @@ const ImageWrapper = styled.div`
 `;
 
 const PostWritingForm = styled.form`
-  /* width: max(400px, 100%); */
+  width: max(400px, 100%);
 `;
 
 const PostInputBox = styled(TextareaAutosize)`
@@ -183,6 +184,9 @@ const PostInputBox = styled(TextareaAutosize)`
   font-size: 18px;
   padding: 4px 1px 7px;
   /* margin-bottom: 20px; */
+  @media screen and (max-width: 700px) {
+    width: 250px;
+  }
 `;
 
 const PostAuthorization = styled.div`
@@ -200,6 +204,11 @@ const PostEditSubmitSection = styled.div`
   border-top: 1px solid rgb(239, 243, 244);
   padding-top: 11px;
   width: max(400px, 100%);
+
+  @media screen and (max-width: 700px) {
+    width: 250px;
+    height: 45px;
+  }
 `;
 
 const PostImageSection = styled.div`
@@ -230,19 +239,21 @@ const UploadImageInfo = styled.span`
   font-style: italic;
   visibility: ${({ images, urls }) =>
     images.length === urls.length ? "hidden" : "visible"};
+
+  @media screen and (max-width: 700px) {
+    font-size: 14px;
+    line-height: 13px;
+  }
 `;
 
 const PostSubmitButton = styled.button`
   font-size: 15px;
   font-weight: bold;
   border-radius: 50px;
-  line-height: 20px;
   padding: 6px 14px;
   color: #fff;
   text-align: center;
-  cursor: pointer;
   background-color: rgb(29, 155, 240);
-  border: none;
   transition: all 0.3s ease-out;
 
   :disabled {

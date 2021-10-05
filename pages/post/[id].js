@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
-import { db, timestamp } from "../../firebase";
+import { db } from "../../firebase";
 import { handlePostBookmark } from "../../utility/handleUserActions";
 import getTimeAgo from "../../utility/getTimeAgo";
 import Image from "next/image";
-import { SiAiqfome } from "react-icons/si";
-import { RiImageAddLine } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { IoBookmarksOutline } from "react-icons/io5";
 import { BsTrash } from "react-icons/bs";
@@ -152,12 +150,17 @@ export default function post() {
 const PostBodyContainer = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: stretch;
+  height: auto;
 `;
 
 const PostBlockContainer = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 900px;
+  min-width: 270px;
+  flex-shrink: 4;
+  /* width: 500px; */
 `;
 
 const PostContainer = styled.div`
@@ -165,7 +168,7 @@ const PostContainer = styled.div`
   padding-top: 10px;
   margin-top: 20px;
   /* min-height: 150px; */
-  max-height: auto;
+  height: auto;
   width: 100%;
   padding-right: 5px;
   border: 1px solid rgb(239, 243, 244);
@@ -181,6 +184,11 @@ const ImageWrapper = styled.div`
   width: 45px;
   overflow: hidden;
   border-radius: 50px;
+
+  @media screen and (max-width: 700px) {
+    width: 35px;
+    height: 35px;
+  }
 `;
 
 const PostInfoWrapper = styled.div`
@@ -219,14 +227,26 @@ const PostText = styled.div`
   font-size: 18px;
   margin-bottom: 12px;
   word-spacing: 1px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.7;
+  text-overflow: ellipsis;
 `;
 
 const PostImages = styled.div`
   position: relative;
+  @media screen and (max-width: 700px) {
+    width: 250px;
+    height: 250px;
+  }
 `;
 
 const PostImage = styled.span`
   margin: 5px 5px;
+  @media screen and (max-width: 700px) {
+    width: 250px;
+    height: 250px;
+  }
 `;
 
 const PostInteractWrapper = styled.div`
@@ -235,6 +255,10 @@ const PostInteractWrapper = styled.div`
   margin-bottom: 8px;
   font-size: 18px;
   gap: 100px;
+
+  @media screen and (max-width: 400px) {
+    gap: 50px;
+  }
 `;
 
 const PostInteractIcon = styled.div`

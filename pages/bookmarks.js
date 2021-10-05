@@ -169,7 +169,7 @@ const PostsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 800px;
-  min-width: 400px;
+  min-width: 200px;
   border: 1px solid rgb(239, 243, 244);
   /* margin-top: 30px; */
 `;
@@ -226,6 +226,10 @@ const ImageWrapper = styled.div`
   width: 45px;
   overflow: hidden;
   border-radius: 50px;
+  @media screen and (max-width: 500px) {
+    height: 35px;
+    width: 35px;
+  }
 `;
 
 const PostInfoWrapper = styled.div`

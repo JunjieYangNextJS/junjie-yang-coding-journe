@@ -19,9 +19,6 @@ export default function profile() {
       <Navbar />
       <BodyContainer>
         <BodyWrapper>
-          <Header>
-            <h2>Profile</h2>{" "}
-          </Header>
           <UserPictureSection>
             <UserPictureContainer>
               <UserPictureWrapper>
@@ -95,17 +92,17 @@ export default function profile() {
             mainly selling cruise tickets through her company's website. We were
             killing it at the start, but fell off short very quickly as her
             company's website was not designed to keep consumers but to kick
-            them out. It didn't have many features and was full of bugs. At that
-            time I thought to myself, 'If the website was better, we could have
-            sold so much more'. That really was highly and deeply inspiring for
-            me and became a turning point of my life. I was already learning
-            Python in my off-times, so it was very easy for me to transition
-            right into Javascript, HTML, CSS. When the pandemic hit, I went
-            all-in on learning the skills I need to become a great front-end
-            developer, mastering React then NextJS. I believe you have checked
-            out all my web app's functionalities at this point. I believe I have
-            shown my capability of building great things. If you are interested,
-            please contact me :)
+            them out. It didn't have many features and was full of strange
+            behaviour. At that time I thought to myself, 'If the website was
+            better, we could have sold so much more'. That really was highly and
+            deeply inspiring for me and became a turning point of my life. I was
+            already learning Python in my off-times, so it was very easy for me
+            to transition right into Javascript, HTML, CSS. When the pandemic
+            hit, I went all-in on learning the skills I need to become a great
+            front-end developer, mastering React then NextJS. I believe you have
+            checked out all my web app's functionalities at this point. I
+            believe I have shown my capability of building great things. If you
+            are interested, please contact me :)
           </AboutMeContainer>
         </BodyPortfolio>
       </BodyContainer>
@@ -123,14 +120,18 @@ const ProfileContainer = styled.div`
 
 const BodyContainer = styled.div`
   display: flex;
-  /* flex-direction: column;
-  align-items: center;
-  gap: 20px; */
-  max-width: 1200px;
-  min-width: 400px;
   gap: 60px;
+  margin-left: 20px;
+  max-width: 1200px;
+  min-width: 350px;
+
   color: #363636;
-  /* margin-top: 30px; */
+
+  @media screen and (max-width: 1300px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
 `;
 
 const BodyWrapper = styled.div`
@@ -142,20 +143,22 @@ const BodyWrapper = styled.div`
   height: auto;
 `;
 
-const Header = styled.div`
-  display: flex;
-  /* border: 1px solid rgb(239, 243, 244); */
-  height: 60px;
-  width: 100%;
-  align-items: flex-start;
+// const Header = styled.div`
+//   display: flex;
+//   /* border: 1px solid rgb(239, 243, 244); */
+//   height: 60px;
+//   width: 100%;
+//   align-items: flex-start;
 
-  h2 {
-    font-size: 20px;
-    margin-left: 15px;
-  }
+//   h2 {
+//     font-size: 20px;
+//     margin-left: 15px;
+//   }
+// `;
+
+const UserPictureSection = styled.div`
+  margin-top: 20px;
 `;
-
-const UserPictureSection = styled.div``;
 
 const UserPictureContainer = styled.div`
   display: flex;
@@ -214,7 +217,7 @@ const BodyPortfolio = styled.div`
   flex-direction: column;
   align-items: center;
   max-width: 800px;
-  min-width: 400px;
+  min-width: 350px;
   height: auto;
   /* border: 1px solid rgb(239, 243, 244); */
   color: #363636;

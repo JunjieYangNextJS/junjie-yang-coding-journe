@@ -190,6 +190,10 @@ const UserIcon = styled.div`
   /* border: 1px solid red; */
   margin-right: 15px;
   overflow: hidden;
+
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
 `;
 
 const PostWritingForm = styled.form``;
@@ -208,9 +212,14 @@ const PostInputBox = styled(TextareaAutosize)`
   outline: none;
   height: 45px;
   width: 500px;
+
   font-size: 18px;
   padding: 4px 1px 7px;
   /* margin-bottom: 20px; */
+
+  @media screen and (max-width: 700px) {
+    width: 300px;
+  }
 `;
 
 const PostAuthorization = styled.div`
@@ -227,6 +236,10 @@ const PostEditSubmitSection = styled.div`
   justify-content: space-between;
   border-top: 1px solid rgb(239, 243, 244);
   padding-top: 11px;
+
+  @media screen and (max-width: 700px) {
+    justify-content: flex-start;
+  }
 `;
 
 const PostImageSection = styled.div`
@@ -255,16 +268,11 @@ const UploadImageLabel = styled.label`
 
 const DeleteImageLabel = styled.span`
   cursor: pointer;
+  @media screen and (max-width: 700px) {
+    margin-left: -5px;
+    margin-right: 5px;
+  }
 `;
-
-// const UploadImageInfo = styled.span`
-//   font-style: italic;
-//   visibility: ${({ newImages, newUrls, postImages }) =>
-//     newImages.length === newUrls.length ||
-//     postImages.sort().join(";") === newUrls.sort().join(";")
-//       ? "hidden"
-//       : "visible"};
-// `;
 
 const PostSubmitButton = styled.button`
   font-size: 15px;
@@ -276,7 +284,6 @@ const PostSubmitButton = styled.button`
   text-align: center;
   cursor: pointer;
   background-color: rgb(29, 155, 240);
-  border: none;
   :disabled {
     background-color: gray;
     cursor: default;

@@ -41,7 +41,7 @@ export default function CommentsBody({
       location={postId}
       commentsExpandLocations={commentsExpandLocations}
     >
-      {session && (
+      {session && !readOnly && (
         <CommentWritingForm>
           <CommenterIconSection>
             <Image
@@ -101,6 +101,10 @@ const CommenterIconSection = styled.div`
   margin-right: 15px;
   margin-left: 15px;
   overflow: hidden;
+
+  @media screen and (max-width: 750px) {
+    display: none;
+  }
 `;
 
 const CommentInputBox = styled.input`
@@ -108,8 +112,13 @@ const CommentInputBox = styled.input`
   outline: none;
   height: 40px;
   width: 500px;
+
   font-size: 18px;
   padding-right: 15px;
+
+  /* @media screen and (max-width: 750px) {
+    width: 200px;
+  } */
 `;
 
 const CommentSubmitSection = styled.button`

@@ -29,7 +29,9 @@ export default function Navbar() {
         <NavElementsContainer>
           <NavElementWrapper>
             <NavElement onClick={() => handleSelectNav("/")} label={"/"}>
-              <SiAiqfome />
+              <NavIcon>
+                <SiAiqfome />
+              </NavIcon>
             </NavElement>
           </NavElementWrapper>
 
@@ -39,8 +41,11 @@ export default function Navbar() {
               label={"/"}
               selectedNav={selectedNav}
             >
-              {selectedNav === "/" ? <AiFillHome /> : <AiOutlineHome />}
-              Home
+              <NavIcon>
+                {selectedNav === "/" ? <AiFillHome /> : <AiOutlineHome />}
+              </NavIcon>
+
+              <NavLabel>Home</NavLabel>
             </NavElement>
           </NavElementWrapper>
 
@@ -50,12 +55,14 @@ export default function Navbar() {
               label={"/comments"}
               selectedNav={selectedNav}
             >
-              {selectedNav === "/comments" ? (
-                <FaCommentDots />
-              ) : (
-                <FaRegCommentDots />
-              )}
-              Comments
+              <NavIcon>
+                {selectedNav === "/comments" ? (
+                  <FaCommentDots />
+                ) : (
+                  <FaRegCommentDots />
+                )}
+              </NavIcon>
+              <NavLabel>Comments</NavLabel>
             </NavElement>
           </NavElementWrapper>
 
@@ -65,13 +72,15 @@ export default function Navbar() {
               label={"/bookmarks"}
               selectedNav={selectedNav}
             >
-              {" "}
-              {selectedNav === "/bookmarks" ? (
-                <IoBookmarks />
-              ) : (
-                <IoBookmarksOutline />
-              )}
-              Bookmarks
+              <NavIcon>
+                {selectedNav === "/bookmarks" ? (
+                  <IoBookmarks />
+                ) : (
+                  <IoBookmarksOutline />
+                )}
+              </NavIcon>
+
+              <NavLabel>Bookmarks</NavLabel>
             </NavElement>
           </NavElementWrapper>
 
@@ -81,8 +90,14 @@ export default function Navbar() {
               label={"/profile"}
               selectedNav={selectedNav}
             >
-              {selectedNav === "/profile" ? <IoPerson /> : <IoPersonOutline />}
-              Profile
+              <NavIcon>
+                {selectedNav === "/profile" ? (
+                  <IoPerson />
+                ) : (
+                  <IoPersonOutline />
+                )}
+              </NavIcon>
+              <NavLabel>Profile</NavLabel>
             </NavElement>
           </NavElementWrapper>
         </NavElementsContainer>
@@ -91,7 +106,7 @@ export default function Navbar() {
         </ContactMeSection>
         <DisplayUserWrapper>
           {session ? (
-            <DisplayUserSection>
+            <DisplayUserSection onClick={signOut}>
               <DisplayUserIcon>
                 <Image
                   src={session.user.image}
@@ -103,7 +118,7 @@ export default function Navbar() {
               </DisplayUserIcon>
               <DisplayUserAccess>
                 <DisplayUserName>{session.user.name}</DisplayUserName>
-                <LogoutSection onClick={signOut}>log out</LogoutSection>
+                <LogoutSection>log out</LogoutSection>
               </DisplayUserAccess>
             </DisplayUserSection>
           ) : (
@@ -122,20 +137,38 @@ const NavbarContainer = styled.div`
   z-index: 2;
   align-items: flex-end;
   width: 30%;
-  height: 100%;
+  height: 100vh;
+
+  @media screen and (max-width: 1050px) {
+    width: 70px;
+    min-width: 70px;
+  }
+  @media screen and (max-width: 500px) {
+    width: 30px;
+    min-width: 30px;
+  }
 `;
 const NavbarWrapper = styled.div`
   display: flex;
   flex-direction: column;
   position: fixed;
   width: 300px;
-  min-width: 100px;
   backface-visibility: hidden;
   flex-basis: auto;
   flex-shrink: 0;
   height: 100%;
   padding-top: 80px;
   overflow-y: auto;
+  font-size: 25px;
+
+  @media screen and (max-width: 1050px) {
+    width: 70px;
+    align-items: center;
+  }
+  @media screen and (max-width: 500px) {
+    width: 30px;
+    min-width: 30px;
+  }
 `;
 
 const NavElementsContainer = styled.div`
@@ -165,6 +198,9 @@ const NavElementWrapper = styled.div`
     margin-top: -80px;
     margin-bottom: -20px;
   }
+  @media screen and (max-width: 1050px) {
+    padding-left: 0;
+  }
 `;
 
 const NavElement = styled.div`
@@ -184,6 +220,25 @@ const NavElement = styled.div`
     `};
 
   border-radius: 50px;
+
+  @media screen and (max-width: 1050px) {
+    padding: 7px 11px;
+  }
+  @media screen and (max-width: 500px) {
+    padding: 3px 3px;
+  }
+`;
+
+const NavIcon = styled.div`
+  @media screen and (max-width: 500px) {
+    font-size: 20px;
+  }
+`;
+
+const NavLabel = styled.div`
+  @media screen and (max-width: 1050px) {
+    display: none;
+  }
 `;
 
 const ContactMeSection = styled.div`
@@ -191,6 +246,10 @@ const ContactMeSection = styled.div`
   justify-content: center;
   padding-right: 50px;
   padding-bottom: 50px;
+
+  @media screen and (max-width: 1050px) {
+    display: none;
+  }
 `;
 
 const ContactMeButton = styled.button`
@@ -213,11 +272,17 @@ const DisplayUserWrapper = styled.div`
   min-height: 60px;
   border-radius: 50px;
   margin-top: 100px;
-  margin-bottom: 50px;
   color: #363636;
   transition: all 0.2s ease-in-out;
   :hover {
     background-color: #e3e3e3;
+  }
+  @media screen and (max-width: 1050px) {
+    margin-top: -150px;
+    transition: none;
+    :hover {
+      background-color: white;
+    }
   }
 `;
 
@@ -227,6 +292,10 @@ const DisplayUserSection = styled.div`
   height: 100%;
   align-items: center;
   padding-left: 15px;
+
+  @media screen and (max-width: 500px) {
+    padding-left: 0;
+  }
 `;
 
 const DisplayUserIcon = styled.div`
@@ -236,9 +305,19 @@ const DisplayUserIcon = styled.div`
   border-radius: 50px;
   margin-right: 15px;
   overflow: hidden;
+
+  @media screen and (max-width: 500px) {
+    height: 28px;
+    width: 28px;
+    margin-right: 0;
+  }
 `;
 
-const DisplayUserAccess = styled.div``;
+const DisplayUserAccess = styled.div`
+  @media screen and (max-width: 1050px) {
+    display: none;
+  }
+`;
 
 const DisplayUserName = styled.div`
   font-weight: 700;
