@@ -70,7 +70,7 @@ export default function profile() {
                 <BulletPoint>JavaScript</BulletPoint>
                 <BulletPoint>HTML</BulletPoint>
                 <BulletPoint>CSS</BulletPoint>
-                <BulletPoint>Firebase</BulletPoint>
+                <BulletPoint>NoSQL</BulletPoint>
               </BulletPointList>
             </BulletPointWrapper>
             <BulletPointWrapper>
@@ -87,22 +87,23 @@ export default function profile() {
           </BulletPointContainer>
           <AboutMeContainer>
             I am Junjie Yang, a 24 years old self-taught front-end developer who
-            has falling in love with programming for 2 years. Two years ago, I
+            has falling in love with programming for 3 years. Three years ago, I
             helped my mother launching her career as a travel agent. We were
             mainly selling cruise tickets through her company's website. We were
-            killing it at the start, but fell off short very quickly as her
-            company's website was not designed to keep consumers but to kick
-            them out. It didn't have many features and was full of strange
-            behaviour. At that time I thought to myself, 'If the website was
-            better, we could have sold so much more'. That really was highly and
-            deeply inspiring for me and became a turning point of my life. I was
-            already learning Python in my off-times, so it was very easy for me
-            to transition right into Javascript, HTML, CSS. When the pandemic
-            hit, I went all-in on learning the skills I need to become a great
-            front-end developer, mastering React then NextJS. I believe you have
-            checked out all my web app's functionalities at this point. I
-            believe I have shown my capability of building great things. If you
-            are interested, please contact me :)
+            killing it at the start, but fell off short quickly as her company's
+            website was not designed to keep consumers but to kick them out. It
+            didn't have many features and was full of strange behaviour. At that
+            time I thought to myself, 'If the website was better, we could have
+            sold so much more'. That really was highly and deeply inspiring for
+            me and became a turning point of my life. I was already learning
+            Python in my off-times, so it was very easy for me to transition
+            right into Javascript since they share the same concept of object
+            oriented programming. When the pandemic hit, I went all-in, spending
+            10+ hours nearly everyday on learning the skills I need to become a
+            great front-end developer and mastered React then NextJS. I believe
+            you have checked out all my web app's functionalities at this point.
+            I believe I have shown my capability of building great things. If
+            you are interested, please contact me :)
           </AboutMeContainer>
         </BodyPortfolio>
       </BodyContainer>
@@ -114,14 +115,13 @@ const ProfileContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  /* width: 100%; */
   height: auto;
 `;
 
 const BodyContainer = styled.div`
   display: flex;
   gap: 60px;
-  margin-left: 20px;
+  margin: 60px 0 0 20px;
   max-width: 1200px;
   min-width: 350px;
 
@@ -131,6 +131,7 @@ const BodyContainer = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    margin-top: 0;
   }
 `;
 
@@ -250,9 +251,10 @@ const BulletPoint = styled.li`
 `;
 
 const AboutMeContainer = styled.div`
+  max-width: 600px;
   margin-top: 50px;
-  text-indent: 20px;
-  font-size: 16px;
+  text-indent: 40px;
+  font-size: 17px;
   word-spacing: 1px;
   line-height: 1.5;
 `;
