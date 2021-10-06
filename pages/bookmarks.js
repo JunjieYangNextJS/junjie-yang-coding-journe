@@ -9,7 +9,10 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { BsTrash } from "react-icons/bs";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
-import { useGetSelectedNav } from "../contexts/SelectedNavContext";
+import {
+  useGetSelectedNav,
+  useSelectedNav,
+} from "../contexts/SelectedNavContext";
 import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
 import getTimeAgo from "../utility/getTimeAgo";
 
@@ -17,6 +20,7 @@ export default function Bookmarks() {
   const [bookmarks, setBookmarks] = useState([]);
   const [session] = useSession();
   const setSelectedNav = useGetSelectedNav();
+  const selectedNav = useSelectedNav();
   const [currentTime, setCurrentTime] = useState(null);
 
   useEffect(() => {
@@ -35,7 +39,7 @@ export default function Bookmarks() {
         setBookmarks(tempBookmarks);
       });
     setCurrentTime(Date.now());
-  }, [session]);
+  }, [session, selectedNav]);
 
   const [commentsExpandLocations, setCommentsExpandLocations] = useState([]);
 

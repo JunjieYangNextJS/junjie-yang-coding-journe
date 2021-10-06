@@ -4,14 +4,18 @@ import Image from "next/image";
 import styled from "styled-components";
 import HomeBody from "../components/HomeBody/HomeBody";
 import Navbar from "../components/Navbar";
-import { useGetSelectedNav } from "../contexts/SelectedNavContext";
+import {
+  useGetSelectedNav,
+  useSelectedNav,
+} from "../contexts/SelectedNavContext";
 
 export default function Home() {
   const setSelectedNav = useGetSelectedNav();
+  const selectedNav = useSelectedNav();
 
   useEffect(() => {
     setSelectedNav("/");
-  });
+  }, [selectedNav]);
 
   return (
     <div>

@@ -15,7 +15,7 @@ export default function Custom404() {
         setTimer(timer - 1);
       }, 1000);
     } else router.push("/");
-  }, [timer]);
+  }, [timer, router]);
 
   const bodyDiv = {
     height: "2000px",

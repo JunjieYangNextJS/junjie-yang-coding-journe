@@ -2,17 +2,22 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Image from "next/dist/client/image";
-import { useGetSelectedNav } from "../contexts/SelectedNavContext";
+import {
+  useGetSelectedNav,
+  useSelectedNav,
+} from "../contexts/SelectedNavContext";
 import profilePic from "../image/profilePic.jpg";
 import { FiPhone } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
+import { useGetSelectedNav } from "./../contexts/SelectedNavContext";
 
 export default function Profile() {
   const setSelectedNav = useGetSelectedNav();
+  const selectedNav = useSelectedNav();
 
   useEffect(() => {
     setSelectedNav("/profile");
-  });
+  }, [selectedNav]);
 
   return (
     <ProfileContainer>

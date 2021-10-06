@@ -9,12 +9,16 @@ import getTimeAgo from "../utility/getTimeAgo";
 import { BsTrash } from "react-icons/bs";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
-import { useGetSelectedNav } from "../contexts/SelectedNavContext";
+import {
+  useGetSelectedNav,
+  useSelectedNav,
+} from "../contexts/SelectedNavContext";
 
 export default function Comments() {
   const [myComments, setMyComments] = useState([]);
   const [session] = useSession();
   const setSelectedNav = useGetSelectedNav();
+  const selectedNav = useSelectedNav();
   const [currentTime, setCurrentTime] = useState(null);
 
   useEffect(() => {
@@ -33,7 +37,7 @@ export default function Comments() {
         setMyComments(tempMyComments);
       });
     setCurrentTime(Date.now());
-  }, [session]);
+  }, [session, selectedNav]);
 
   return (
     <HomeContainer>

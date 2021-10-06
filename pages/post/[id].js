@@ -23,7 +23,7 @@ export default function Post() {
   const [targetPost, setTargetPost] = useState(null);
   const [currentTime, setCurrentTime] = useState(null);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (id) {
       const doc = db.collection("posts").doc(id);
       doc.onSnapshot((snapshot) => {
