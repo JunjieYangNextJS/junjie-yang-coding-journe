@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import Head from "next/head";
-import Image from "next/image";
 import styled from "styled-components";
 import HomeBody from "../components/HomeBody/HomeBody";
 import Navbar from "../components/Navbar";

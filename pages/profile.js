@@ -9,7 +9,6 @@ import {
 import profilePic from "../image/profilePic.jpg";
 import { FiPhone } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
-import { useGetSelectedNav } from "./../contexts/SelectedNavContext";
 
 export default function Profile() {
   const setSelectedNav = useGetSelectedNav();
