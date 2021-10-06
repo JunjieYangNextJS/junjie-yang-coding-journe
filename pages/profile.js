@@ -7,7 +7,7 @@ import profilePic from "../image/profilePic.jpg";
 import { FiPhone } from "react-icons/fi";
 import { AiOutlineMail } from "react-icons/ai";
 
-export default function profile() {
+export default function Profile() {
   const setSelectedNav = useGetSelectedNav();
 
   useEffect(() => {

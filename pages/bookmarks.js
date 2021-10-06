@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import PostEditBox from "../components/HomeBody/Post/PostEditBox";
 import CommentsBody from "../components/HomeBody/Comments/CommentsBody";
 import { useSession, signIn } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
 import { FaRegCommentDots } from "react-icons/fa";
-import { FiEdit } from "react-icons/fi";
 import { BsTrash } from "react-icons/bs";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
@@ -15,7 +13,7 @@ import { useGetSelectedNav } from "../contexts/SelectedNavContext";
 import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
 import getTimeAgo from "../utility/getTimeAgo";
 
-export default function bookmarksPage() {
+export default function Bookmarks() {
   const [bookmarks, setBookmarks] = useState([]);
   const [session] = useSession();
   const setSelectedNav = useGetSelectedNav();

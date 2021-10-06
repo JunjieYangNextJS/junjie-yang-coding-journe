@@ -15,7 +15,7 @@ import PostEditBox from "../../components/HomeBody/Post/PostEditBox";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 
-export default function post() {
+export default function Post() {
   const router = useRouter();
   const id = router.query.id;
   const [session] = useSession();

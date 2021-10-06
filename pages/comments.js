@@ -11,7 +11,7 @@ import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { useGetSelectedNav } from "../contexts/SelectedNavContext";
 
-export default function commentsPage() {
+export default function Comments() {
   const [myComments, setMyComments] = useState([]);
   const [session] = useSession();
   const setSelectedNav = useGetSelectedNav();
