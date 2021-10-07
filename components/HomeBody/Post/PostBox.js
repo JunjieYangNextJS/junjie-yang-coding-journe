@@ -66,6 +66,7 @@ export default function PostBox({ session }) {
         project: 0,
         bookmarked: [],
         commentsAmount: 0,
+        liked: [],
         timestamp,
       });
     };

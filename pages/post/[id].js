@@ -3,11 +3,15 @@ import styled from "styled-components";
 import { useSession } from "next-auth/client";
 import { useRouter } from "next/router";
 import { db } from "../../firebase";
-import { handlePostBookmark } from "../../utility/handleUserActions";
+import {
+  handlePostBookmark,
+  handlePostLike,
+} from "../../utility/handleUserActions";
 import getTimeAgo from "../../utility/getTimeAgo";
 import Image from "next/image";
 import { FiEdit } from "react-icons/fi";
 import { IoBookmarksOutline } from "react-icons/io5";
+import { FcLikePlaceholder, FcLike } from "react-icons/fc";
 import { BsTrash } from "react-icons/bs";
 import Navbar from "../../components/Navbar";
 import CommentsBody from "../../components/HomeBody/Comments/CommentsBody";
@@ -105,6 +109,34 @@ export default function Post() {
                         >
                           <IoBookmarksOutline />
                         </BookmarkedWrapper>
+                      </PostInteractIcon>
+                    </Tippy>
+                  )}
+                  {session ? (
+                    <Tippy content="liked">
+                      <PostInteractIcon
+                        onClick={() => handlePostLike(id, session)}
+                      >
+                        {targetPost.liked.includes(session.user.email) ? (
+                          <FcLike />
+                        ) : (
+                          <FcLikePlaceholder />
+                        )}
+                        <LikeCount>
+                          {targetPost.liked.length !== 0 &&
+                            targetPost.liked.length}
+                        </LikeCount>
+                      </PostInteractIcon>
+                    </Tippy>
+                  ) : (
+                    <Tippy content="liked">
+                      <PostInteractIcon>
+                        <FcLikePlaceholder />
+
+                        <LikeCount>
+                          {targetPost.liked.length !== 0 &&
+                            targetPost.liked.length}
+                        </LikeCount>
                       </PostInteractIcon>
                     </Tippy>
                   )}
@@ -250,10 +282,10 @@ const PostInteractWrapper = styled.div`
   margin-top: 10px;
   margin-bottom: 8px;
   font-size: 18px;
-  gap: 100px;
+  gap: 70px;
 
-  @media screen and (max-width: 400px) {
-    gap: 50px;
+  @media screen and (max-width: 600px) {
+    gap: 30px;
   }
 `;
 
@@ -272,6 +304,11 @@ const PostInteractIcon = styled.div`
     background-color: #d4f7ff;
     color: black;
   }
+`;
+
+const LikeCount = styled.p`
+  font-size: 14px;
+  color: red;
 `;
 
 const BookmarkedWrapper = styled.div`

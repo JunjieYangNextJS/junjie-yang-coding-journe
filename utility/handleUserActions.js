@@ -5,6 +5,23 @@ const handleTargetPost = (id) => {
   router.push("/post/" + id);
 };
 
+const handlePostLike = async (id, session) => {
+  const userLikedRef = db.collection("posts");
+  const snapshot = await userLikedRef.doc(id).get();
+
+  if (snapshot.data().liked.includes(session.user.email)) {
+    userLikedRef.doc(id).update({
+      liked: snapshot
+        .data()
+        .liked.filter((email) => email !== session.user.email),
+    });
+  } else {
+    userLikedRef.doc(id).update({
+      liked: snapshot.data().liked.concat([session.user.email]),
+    });
+  }
+};
+
 const handleIdDelete = async (collection, id, postId) => {
   db.collection(collection).doc(id).delete();
 
@@ -58,4 +75,4 @@ const handlePostBookmark = async (postId, data, session) => {
   }
 };
 
-export { handleTargetPost, handleIdDelete, handlePostBookmark };
+export { handleTargetPost, handlePostLike, handleIdDelete, handlePostBookmark };

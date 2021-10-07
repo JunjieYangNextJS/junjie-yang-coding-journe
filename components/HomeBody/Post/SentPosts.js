@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
-import styled, { css } from "styled-components";
-import { db, storage } from "../../../firebase";
+import styled from "styled-components";
+import { db } from "../../../firebase";
 import {
   handleIdDelete,
   handlePostBookmark,
   handleTargetPost,
+  handlePostLike,
 } from "../../../utility/handleUserActions";
 import getTimeAgo from "../../../utility/getTimeAgo";
 import Image from "next/image";
 import { FaRegCommentDots } from "react-icons/fa";
 import { IoBookmarksOutline } from "react-icons/io5";
+import { FcLikePlaceholder, FcLike } from "react-icons/fc";
 import { FiEdit } from "react-icons/fi";
 import { BsTrash } from "react-icons/bs";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import CommentsBody from "../Comments/CommentsBody";
-import PostEditBox from "./PostEditBox";
 
 export default function SentPosts({ session }) {
   const [posts, setPosts] = useState([]);
@@ -46,21 +47,7 @@ export default function SentPosts({ session }) {
           commentsExpandLocations.filter((location) => location !== postId)
         )
       : setCommentsExpandLocations((prevLocation) => [...prevLocation, postId]);
-    // postEditExpandLocation === postId && setPostEditExpandLocation("");
   };
-
-  // const [postEditExpand, setPostEditExpand] = useState(false);
-
-  // const handlePostEditExpand = (postId) => {
-  //   if (postEditExpandLocation === postId) {
-  //     setPostEditExpandLocation("");
-  //   } else {
-  //     setPostEditExpandLocation(postId);
-  //     setCommentsExpandLocations(
-  //       commentsExpandLocations.filter((location) => location !== postId)
-  //     );
-  //   }
-  // };
 
   return (
     <PostsBodyContainer>
@@ -133,12 +120,36 @@ export default function SentPosts({ session }) {
                     </PostInteractIcon>
                   </Tippy>
                 )}
+
+                {session ? (
+                  <Tippy content="liked">
+                    <PostInteractIcon
+                      onClick={() => handlePostLike(postId, session)}
+                    >
+                      {data.liked.includes(session.user.email) ? (
+                        <FcLike />
+                      ) : (
+                        <FcLikePlaceholder />
+                      )}
+                      <LikeCount>
+                        {data.liked.length !== 0 && data.liked.length}
+                      </LikeCount>
+                    </PostInteractIcon>
+                  </Tippy>
+                ) : (
+                  <Tippy content="liked">
+                    <PostInteractIcon>
+                      <FcLikePlaceholder />
+
+                      <LikeCount>
+                        {data.liked.length !== 0 && data.liked.length}
+                      </LikeCount>
+                    </PostInteractIcon>
+                  </Tippy>
+                )}
                 {session && session.user.email === data.posterEmail && (
                   <Tippy content="edit">
-                    <PostInteractIcon
-                      // onClick={() => handlePostEditExpand(postId)}
-                      onClick={() => handleTargetPost(postId)}
-                    >
+                    <PostInteractIcon onClick={() => handleTargetPost(postId)}>
                       <FiEdit />
                     </PostInteractIcon>
                   </Tippy>
@@ -155,13 +166,7 @@ export default function SentPosts({ session }) {
               </PostInteractWrapper>
             </PostInfoWrapper>
           </PostContainer>
-          {/* <PostEditBox
-            postEditExpandLocation={postEditExpandLocation}
-            setPostEditExpandLocation={setPostEditExpandLocation}
-            postId={postId}
-            postText={data.text}
-            session={session}
-          /> */}
+
           <CommentsBody
             commentsExpandLocations={commentsExpandLocations}
             postId={postId}
@@ -264,7 +269,7 @@ const PostInteractWrapper = styled.div`
   margin-top: 20px;
   margin-bottom: 8px;
   font-size: 18px;
-  gap: 50px;
+  gap: 40px;
 `;
 
 const PostInteractIcon = styled.div`
@@ -283,6 +288,11 @@ const PostInteractIcon = styled.div`
     background-color: #d4f7ff;
     color: black;
   }
+`;
+
+const LikeCount = styled.p`
+  font-size: 14px;
+  color: red;
 `;
 
 const BookmarkedWrapper = styled.div`
