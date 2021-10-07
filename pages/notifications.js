@@ -4,11 +4,9 @@ import Image from "next/image";
 import { useSession, signIn } from "next-auth/client";
 import { db } from "../firebase";
 import Navbar from "../components/Navbar";
-import { handleTargetPost, handleIdDelete } from "../utility/handleUserActions";
+import { handleTargetPost } from "../utility/handleUserActions";
 import getTimeAgo from "../utility/getTimeAgo";
-import { BsTrash } from "react-icons/bs";
 import { FcLike } from "react-icons/fc";
-import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import {
   useGetSelectedNav,
@@ -23,6 +21,8 @@ export default function Notifications() {
   const selectedNav = useSelectedNav();
   const [currentTime, setCurrentTime] = useState(null);
 
+  // fetching a collection of comments data from other people's comments under the user's posts.
+  // fetching a collection of likes data from other people's liked under the user's posts.
   useEffect(() => {
     setSelectedNav("/notifications");
 
@@ -57,16 +57,14 @@ export default function Notifications() {
     setCurrentTime(Date.now());
   }, [session, selectedNav]);
 
-  console.log(liked);
-
   return (
     <HomeContainer>
       <Navbar />
-      <PostsBodyContainer>
+      <NotificationsBodyContainer>
         <Header>
           <h2>Notifications</h2>{" "}
         </Header>
-        <PostsBodyWrapper>
+        <NotificationsBodyWrapper>
           {liked.map(({ likedPostId, likedEmails }, index) => (
             <LikedContainer key={index}>
               <LikedEmailsWrapper>{likedEmails.join(", ")} </LikedEmailsWrapper>
@@ -78,12 +76,12 @@ export default function Notifications() {
               </LikedPost>
             </LikedContainer>
           ))}
-        </PostsBodyWrapper>
-        <PostsBodyWrapper>
+        </NotificationsBodyWrapper>
+        <NotificationsBodyWrapper>
           {session ? (
             notifications.map(({ notificationsId, data }) => (
-              <PostBlockContainer key={notificationsId}>
-                <PostContainer>
+              <NotificationBlockContainer key={notificationsId}>
+                <NotificationContainer>
                   <PostIconWrapper>
                     <ImageWrapper>
                       <Image
@@ -95,7 +93,7 @@ export default function Notifications() {
                       />
                     </ImageWrapper>
                   </PostIconWrapper>
-                  <PostInfoWrapper>
+                  <NotificationInfoWrapper>
                     <PostUserInfo>
                       <PostUsername>{data.commenterName}</PostUsername>
                       {data.timestamp && (
@@ -108,17 +106,17 @@ export default function Notifications() {
                     <PostContent onClick={() => handleTargetPost(data.postId)}>
                       {data.commentText}
                     </PostContent>
-                  </PostInfoWrapper>
-                </PostContainer>
-              </PostBlockContainer>
+                  </NotificationInfoWrapper>
+                </NotificationContainer>
+              </NotificationBlockContainer>
             ))
           ) : (
             <InteractPlaceholder onClick={signIn}>
               Please Login to unlock this feature.
             </InteractPlaceholder>
           )}
-        </PostsBodyWrapper>
-      </PostsBodyContainer>
+        </NotificationsBodyWrapper>
+      </NotificationsBodyContainer>
     </HomeContainer>
   );
 }
@@ -127,11 +125,10 @@ const HomeContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  /* width: 100%; */
   height: auto;
 `;
 
-const PostsBodyContainer = styled.div`
+const NotificationsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 800px;
@@ -153,7 +150,7 @@ const Header = styled.div`
   }
 `;
 
-const PostsBodyWrapper = styled.div`
+const NotificationsBodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -192,12 +189,10 @@ const InteractPlaceholder = styled.h1`
   color: rgb(29, 155, 240);
 `;
 
-const PostBlockContainer = styled.div``;
+const NotificationBlockContainer = styled.div``;
 
-const PostContainer = styled.div`
+const NotificationContainer = styled.div`
   display: flex;
-
-  /* min-height: 150px; */
   max-height: auto;
   width: 100%;
   border: 1px solid rgb(239, 243, 244);
@@ -222,7 +217,7 @@ const ImageWrapper = styled.div`
   }
 `;
 
-const PostInfoWrapper = styled.div`
+const NotificationInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 10px;

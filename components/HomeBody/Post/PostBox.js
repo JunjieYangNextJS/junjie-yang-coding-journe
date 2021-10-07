@@ -11,6 +11,7 @@ export default function PostBox({ session }) {
   const [images, setImages] = useState([]);
   const [urls, setUrls] = useState([]);
 
+  // the user can select the images they want to upload.
   const handleImagesSelect = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
       const tempImage = e.target.files[i];
@@ -24,6 +25,7 @@ export default function PostBox({ session }) {
     }
   };
 
+  // the selected images are uploading and tells the user when it completes.
   useEffect(() => {
     if (images.length === 0) return;
     const promises = [];
@@ -53,22 +55,27 @@ export default function PostBox({ session }) {
       .catch(() => alert("Images are not successfully uploaded."));
   }, [images]);
 
+  // send the post and resets the postbox.
   const sendPost = (e) => {
     e.preventDefault();
 
     const uploadPost = async () => {
-      db.collection("posts").add({
-        posterEmail: session.user.email,
-        posterName: session.user.name,
-        posterIcon: session.user.image,
-        text: postInput,
-        images: urls,
-        project: 0,
-        bookmarked: [],
-        commentsAmount: 0,
-        liked: [],
-        timestamp,
-      });
+      try {
+        db.collection("posts").add({
+          posterEmail: session.user.email,
+          posterName: session.user.name,
+          posterIcon: session.user.image,
+          text: postInput,
+          images: urls,
+          project: 0,
+          bookmarked: [],
+          commentsAmount: 0,
+          liked: [],
+          timestamp,
+        });
+      } catch {
+        alert("Post upload failed.");
+      }
     };
 
     const resetPost = async () => {
@@ -153,8 +160,6 @@ export default function PostBox({ session }) {
 const PostPostingSection = styled.div`
   display: flex;
   border: 1px solid rgb(239, 243, 244);
-
-  /* box-shadow: 0 0 5px 1px rgb(29, 155, 240); */
   padding: 10px 18px;
   margin-top: 5px;
   margin-bottom: 20px;
@@ -162,7 +167,6 @@ const PostPostingSection = styled.div`
 
 const UserIcon = styled.div`
   display: flex;
-  /* border: 1px solid red; */
   margin-right: 15px;
 `;
 
@@ -184,7 +188,6 @@ const PostInputBox = styled(TextareaAutosize)`
   width: 500px;
   font-size: 18px;
   padding: 4px 1px 7px;
-  /* margin-bottom: 20px; */
   @media screen and (max-width: 700px) {
     width: 250px;
   }

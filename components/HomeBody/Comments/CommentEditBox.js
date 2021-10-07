@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { db } from "../../../firebase";
 
@@ -9,6 +9,7 @@ export default function CommentEditBox({
 }) {
   const [newCommentInput, setNewCommentInput] = useState(commentText);
 
+  // the users can edit their comments.
   const submitEditedComment = (e) => {
     e.preventDefault();
 

@@ -22,6 +22,7 @@ export default function SentPosts({ session }) {
   const [posts, setPosts] = useState([]);
   const [currentTime, setCurrentTime] = useState(null);
 
+  // fetching data from the posts the user has sent and display them.
   useEffect(() => {
     db.collection("posts")
       .orderBy("timestamp", "desc")
@@ -193,8 +194,6 @@ const PostBlockContainer = styled.div`
 
 const PostContainer = styled.div`
   display: flex;
-
-  /* min-height: 150px; */
   max-height: auto;
   width: 100%;
   border: 1px solid rgb(239, 243, 244);

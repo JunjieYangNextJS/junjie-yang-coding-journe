@@ -17,16 +17,20 @@ export default function CommentsBody({
   const handlePostComments = async (e) => {
     e.preventDefault();
 
-    db.collection("comments").add({
-      postId,
-      commenterEmail: session.user.email,
-      commenterName: session.user.name,
-      commenterIcon: session.user.image,
-      commentText: commentInput,
-      posterName,
-      posterEmail,
-      timestamp,
-    });
+    try {
+      db.collection("comments").add({
+        postId,
+        commenterEmail: session.user.email,
+        commenterName: session.user.name,
+        commenterIcon: session.user.image,
+        commentText: commentInput,
+        posterName,
+        posterEmail,
+        timestamp,
+      });
+    } catch {
+      alert("Comment upload failed.");
+    }
 
     const postIdRef = db.collection("posts");
     const snapshot = await postIdRef.doc(postId).get();
@@ -83,7 +87,6 @@ const CommentsBodyContainer = styled.div`
     commentsExpandLocations.includes(location) ? "flex" : "none"};
   flex-direction: column;
   margin-bottom: 20px;
-  /* width: max(400px, 100%); */
 `;
 
 const CommentWritingForm = styled.form`
@@ -116,10 +119,6 @@ const CommentInputBox = styled.input`
 
   font-size: 18px;
   padding-right: 15px;
-
-  /* @media screen and (max-width: 750px) {
-    width: 200px;
-  } */
 `;
 
 const CommentSubmitSection = styled.button`

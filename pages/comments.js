@@ -21,6 +21,7 @@ export default function Comments() {
   const selectedNav = useSelectedNav();
   const [currentTime, setCurrentTime] = useState(null);
 
+  // fetching data from user's comments
   useEffect(() => {
     setSelectedNav("/comments");
 
@@ -149,16 +150,10 @@ const PostLoginConvincer = styled.h1`
   color: rgb(29, 155, 240);
 `;
 
-const PostBlockContainer = styled.div`
-  /* display: flex;
-  flex-direction: column;
-  gap: 40px; */
-`;
+const PostBlockContainer = styled.div``;
 
 const PostContainer = styled.div`
   display: flex;
-
-  /* min-height: 150px; */
   max-height: auto;
   width: 100%;
   border: 1px solid rgb(239, 243, 244);

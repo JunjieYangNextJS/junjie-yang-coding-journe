@@ -27,6 +27,7 @@ export default function Post() {
   const [targetPost, setTargetPost] = useState(null);
   const [currentTime, setCurrentTime] = useState(null);
 
+  // fetching data from a specific post that the user accesses
   useEffect(() => {
     if (id) {
       const doc = db.collection("posts").doc(id);
@@ -34,7 +35,7 @@ export default function Post() {
         if (snapshot.exists) {
           setTargetPost(snapshot.data());
         } else {
-          router.push("/404");
+          router.replace("/404");
         }
       });
       setCurrentTime(Date.now());
@@ -192,14 +193,12 @@ const PostBlockContainer = styled.div`
   max-width: 900px;
   min-width: 270px;
   flex-shrink: 4;
-  /* width: 500px; */
 `;
 
 const PostContainer = styled.div`
   display: flex;
   padding-top: 10px;
   margin-top: 20px;
-  /* min-height: 150px; */
   height: auto;
   width: 100%;
   padding-right: 5px;
@@ -227,7 +226,6 @@ const PostInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 8px;
-  /* justify-content: space-between; */
 `;
 
 const PostUserInfo = styled.div`

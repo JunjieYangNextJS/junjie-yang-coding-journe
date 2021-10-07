@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 export default function PostsDirectory() {
   const [selectedProject, setSelectedProject] = useState(null);
 
+  // direct user to the project they are interested in
   const handleSelectProject = (project) => {
     setSelectedProject(project);
   };

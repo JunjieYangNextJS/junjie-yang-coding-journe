@@ -18,6 +18,7 @@ export default function PostEditBox({
   const [newImages, setNewImages] = useState([]);
   const [newUrls, setNewUrls] = useState([]);
 
+  // The user can add new images to the existing image array and display them under the post they are trying to edit.
   const handleImagesEdit = (e) => {
     for (let i = 0; i < e.target.files.length; i++) {
       const tempImage = e.target.files[i];
@@ -31,6 +32,7 @@ export default function PostEditBox({
     }
   };
 
+  // uploads the new images to the database
   useEffect(() => {
     if (newImages.length === 0) return;
     const promises = [];
@@ -60,6 +62,7 @@ export default function PostEditBox({
       .catch(() => alert("Images are not successfully updated."));
   }, [newImages]);
 
+  // the user can submit the edited post after finished editing
   const editPost = (e) => {
     e.preventDefault();
 
@@ -95,6 +98,7 @@ export default function PostEditBox({
     }
   };
 
+  // the user can delete image from database.
   const handleDeleteImages = async () => {
     const postsRef = db.collection("posts");
 
@@ -152,13 +156,6 @@ export default function PostEditBox({
                 <DeleteImageLabel onClick={handleDeleteImages}>
                   Delete Images
                 </DeleteImageLabel>
-                {/* <UploadImageInfo
-                  newImages={newImages}
-                  newUrls={newUrls}
-                  postImages={postImages}
-                >
-                  {newImages.length} images are uploading...
-                </UploadImageInfo> */}
               </PostImageSection>
               <PostSubmitButton
                 onClick={(e) => editPost(e)}
@@ -187,7 +184,6 @@ const UserIcon = styled.div`
   height: 40px;
   width: 40px;
   border-radius: 50px;
-  /* border: 1px solid red; */
   margin-right: 15px;
   overflow: hidden;
 
@@ -198,15 +194,6 @@ const UserIcon = styled.div`
 
 const PostWritingForm = styled.form``;
 
-// const PostInputBox = styled.input`
-//   border: none;
-//   outline: none;
-//   height: 45px;
-//   width: 500px;
-//   font-size: 18px;
-//   /* margin-bottom: 20px; */
-// `;
-
 const PostInputBox = styled(TextareaAutosize)`
   border: none;
   outline: none;
@@ -215,7 +202,6 @@ const PostInputBox = styled(TextareaAutosize)`
 
   font-size: 18px;
   padding: 4px 1px 7px;
-  /* margin-bottom: 20px; */
 
   @media screen and (max-width: 700px) {
     width: 300px;

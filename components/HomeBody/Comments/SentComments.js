@@ -19,6 +19,7 @@ export default function SentComments({
   const [comments, setComments] = useState([]);
   const [currentTime, setCurrentTime] = useState(null);
 
+  // fetch data from sent comments display them.
   useEffect(() => {
     db.collection("comments")
       .where("postId", "==", postId)

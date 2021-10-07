@@ -20,7 +20,6 @@ export default function PostsBody() {
 const PostsBodyContainer = styled.div`
   display: flex;
   flex-direction: column;
-  /* width: max(400px, 100%); */
   max-width: 800px;
   flex-grow: 2;
   border: 1px solid rgb(239, 243, 244);

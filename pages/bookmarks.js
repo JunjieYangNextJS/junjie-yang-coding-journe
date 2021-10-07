@@ -23,6 +23,7 @@ export default function Bookmarks() {
   const selectedNav = useSelectedNav();
   const [currentTime, setCurrentTime] = useState(null);
 
+  // fetching data from the user's bookmarked posts.
   useEffect(() => {
     setSelectedNav("/bookmarks");
 
@@ -143,7 +144,6 @@ export default function Bookmarks() {
                   posterName={data.posterName}
                   posterEmail={data.posterEmail}
                   readOnly={true}
-                  // commentsAmount={data.commentsAmount}
                   session={session}
                 />
               </PostBlockContainer>
@@ -163,7 +163,6 @@ const HomeContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  /* width: 100%; */
   height: auto;
 `;
 
@@ -173,12 +172,10 @@ const PostsBodyContainer = styled.div`
   width: 800px;
   min-width: 200px;
   border: 1px solid rgb(239, 243, 244);
-  /* margin-top: 30px; */
 `;
 
 const Header = styled.div`
   display: flex;
-
   height: 60px;
   justify-content: flex-start;
   align-items: center;
@@ -201,16 +198,10 @@ const PostLoginConvincer = styled.h1`
   color: rgb(29, 155, 240);
 `;
 
-const PostBlockContainer = styled.div`
-  /* display: flex;
-  flex-direction: column;
-  gap: 40px; */
-`;
+const PostBlockContainer = styled.div``;
 
 const PostContainer = styled.div`
   display: flex;
-
-  /* min-height: 150px; */
   max-height: auto;
   width: 100%;
   border: 1px solid rgb(239, 243, 244);

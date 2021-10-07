@@ -128,7 +128,6 @@ const BodyContainer = styled.div`
   margin: 60px 0 0 20px;
   max-width: 1200px;
   min-width: 350px;
-
   color: #363636;
 
   @media screen and (max-width: 1300px) {
@@ -144,22 +143,8 @@ const BodyWrapper = styled.div`
   flex-direction: column;
   margin: 0 auto;
   align-items: center;
-  /* border: 1px solid rgb(239, 243, 244); */
   height: auto;
 `;
-
-// const Header = styled.div`
-//   display: flex;
-//   /* border: 1px solid rgb(239, 243, 244); */
-//   height: 60px;
-//   width: 100%;
-//   align-items: flex-start;
-
-//   h2 {
-//     font-size: 20px;
-//     margin-left: 15px;
-//   }
-// `;
 
 const UserPictureSection = styled.div`
   margin-top: 20px;
@@ -224,14 +209,12 @@ const BodyPortfolio = styled.div`
   max-width: 800px;
   min-width: 350px;
   height: auto;
-  /* border: 1px solid rgb(239, 243, 244); */
   color: #363636;
   padding: 60px 50px;
 `;
 
 const BulletPointContainer = styled.div`
   display: flex;
-  /* flex-direction: column; */
   gap: 80px;
 `;
 
@@ -250,7 +233,6 @@ const BulletPointList = styled.ul``;
 
 const BulletPoint = styled.li`
   font-size: 17px;
-
   line-height: 1.4;
 `;
 
