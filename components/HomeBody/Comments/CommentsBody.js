@@ -24,6 +24,7 @@ export default function CommentsBody({
       commenterIcon: session.user.image,
       commentText: commentInput,
       posterName,
+      posterEmail,
       timestamp,
     });
 

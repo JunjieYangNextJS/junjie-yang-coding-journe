@@ -5,17 +5,19 @@ import Image from "next/image";
 import { useSelectedNav } from "../contexts/SelectedNavContext";
 import { useRouter } from "next/router";
 import { SiAiqfome } from "react-icons/si";
-import { AiOutlineHome } from "react-icons/ai";
-import { AiFillHome } from "react-icons/ai";
-import { FaRegCommentDots } from "react-icons/fa";
-import { FaCommentDots } from "react-icons/fa";
-import { IoBookmarksOutline } from "react-icons/io5";
-import { IoBookmarks } from "react-icons/io5";
-import { IoPersonOutline } from "react-icons/io5";
-import { IoPerson } from "react-icons/io5";
-import { FaRegUserCircle } from "react-icons/fa";
-import { BiLogIn } from "react-icons/bs";
-import { RiLoginCircleLine } from "react-icons/ri";
+import { AiOutlineHome, AiFillHome } from "react-icons/ai";
+import { FaRegCommentDots, FaCommentDots } from "react-icons/fa";
+import {
+  IoBookmarksOutline,
+  IoBookmarks,
+  IoPersonOutline,
+  IoPerson,
+} from "react-icons/io5";
+import {
+  RiLoginCircleLine,
+  RiNotification2Line,
+  RiNotification3Fill,
+} from "react-icons/ri";
 
 export default function Navbar() {
   const [session] = useSession();
@@ -84,6 +86,23 @@ export default function Navbar() {
               </NavIcon>
 
               <NavLabel>Bookmarks</NavLabel>
+            </NavElement>
+          </NavElementWrapper>
+          <NavElementWrapper>
+            <NavElement
+              onClick={() => handleSelectNav("/notifications")}
+              label={"/notifications"}
+              selectedNav={selectedNav}
+            >
+              <NavIcon>
+                {selectedNav === "/notifications" ? (
+                  <RiNotification3Fill />
+                ) : (
+                  <RiNotification2Line />
+                )}
+              </NavIcon>
+
+              <NavLabel>Notifications</NavLabel>
             </NavElement>
           </NavElementWrapper>
 
@@ -189,7 +208,7 @@ const NavElementsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 200px;
+  padding-bottom: 80px;
 `;
 
 const NavElementWrapper = styled.div`
@@ -244,6 +263,7 @@ const NavElement = styled.div`
 `;
 
 const NavIcon = styled.div`
+  margin-bottom: -5px;
   @media screen and (max-width: 500px) {
     font-size: 20px;
   }
@@ -292,7 +312,7 @@ const DisplayUserWrapper = styled.div`
     background-color: #e3e3e3;
   }
   @media screen and (max-width: 1050px) {
-    margin-top: -150px;
+    margin-top: -50px;
     transition: none;
     :hover {
       background-color: white;
