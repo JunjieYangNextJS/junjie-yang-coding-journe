@@ -43,6 +43,7 @@ export default function Notifications() {
       });
 
     db.collection("posts")
+      .where("posterEmail", "==", session.user.email)
       .where("liked", "!=", [])
       .onSnapshot((snapshot) => {
         let tempLiked = [];
@@ -112,9 +113,9 @@ export default function Notifications() {
               </PostBlockContainer>
             ))
           ) : (
-            <PostLoginConvincer onClick={signIn}>
+            <InteractPlaceholder onClick={signIn}>
               Please Login to unlock this feature.
-            </PostLoginConvincer>
+            </InteractPlaceholder>
           )}
         </PostsBodyWrapper>
       </PostsBodyContainer>
@@ -143,7 +144,7 @@ const Header = styled.div`
   display: flex;
 
   height: 60px;
-  justify-content: flex-start;
+
   align-items: center;
 
   h2 {
@@ -185,7 +186,7 @@ const LikedPost = styled.div`
   cursor: pointer;
 `;
 
-const PostLoginConvincer = styled.h1`
+const InteractPlaceholder = styled.h1`
   padding: 30px 10px;
   cursor: pointer;
   color: rgb(29, 155, 240);
